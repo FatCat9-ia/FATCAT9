@@ -1,0 +1,649 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Drummond Social Intelligence</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --black:     #0d0d0d;
+    --off-black: #141414;
+    --dark:      #1a1a1a;
+    --card:      #1e1e1e;
+    --border:    #272727;
+    --border2:   #333;
+    --gray:      #555;
+    --gray-mid:  #777;
+    --gray-light:#a0a0a0;
+    --chalk:     #ebebeb;
+    --white:     #ffffff;
+    --red:       #d92b2b;
+    --red-dim:   rgba(217,43,43,0.1);
+    --red-mid:   rgba(217,43,43,0.3);
+    color-scheme: dark;
+  }
+
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--black); color:var(--chalk); font-family:'Inter',sans-serif; font-size:13px; line-height:1.5; }
+
+  /* ── HEADER ── */
+  header {
+    background:var(--off-black);
+    border-bottom:1px solid var(--border);
+    padding:14px 32px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .logo-area { display:flex; align-items:center; gap:12px; }
+  .logo-area img { width:36px; height:36px; object-fit:contain; border-radius:4px; }
+  .vline { width:1px; height:26px; background:var(--border2); flex-shrink:0; }
+  .header-titles h1 { font-size:14px; font-weight:600; color:var(--white); letter-spacing:-0.01em; }
+  .header-titles p  { font-size:11px; color:var(--gray-mid); margin-top:1px; }
+  .header-pills { display:flex; gap:6px; flex-shrink:0; }
+  .pill { font-size:11px; font-weight:500; color:var(--gray-light); background:var(--dark); border:1px solid var(--border); padding:3px 10px; border-radius:20px; white-space:nowrap; }
+
+  /* ── FILTERS BAR ── */
+  .filters-bar {
+    background:var(--off-black);
+    border-bottom:1px solid var(--border);
+    padding:0 32px;
+    display:flex; align-items:stretch; gap:0;
+    overflow-x:auto; scrollbar-width:none;
+  }
+  .filters-bar::-webkit-scrollbar { display:none; }
+  .filter-group { display:flex; align-items:center; gap:6px; padding:10px 0; margin-right:16px; flex-shrink:0; }
+  .filter-sep   { width:1px; background:var(--border); margin:0 8px; align-self:stretch; flex-shrink:0; }
+  .filter-label { font-size:10px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray); flex-shrink:0; }
+
+  .fbtn {
+    font-family:'Inter',sans-serif;
+    font-size:12px; font-weight:500;
+    padding:4px 12px; border-radius:4px;
+    border:1px solid var(--border);
+    background:transparent; color:var(--gray-mid);
+    cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0;
+  }
+  .fbtn:hover { color:var(--white); border-color:var(--border2); }
+  .fbtn.active { background:var(--red); color:var(--white); border-color:var(--red); font-weight:600; }
+  .tdot-sm { display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+
+  /* ── KPI ROW ── */
+  .kpi-row { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid var(--border); }
+  .kpi-card { padding:22px 28px; border-right:1px solid var(--border); position:relative; overflow:hidden; }
+  .kpi-card:last-child { border-right:none; }
+  .kpi-label { font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--gray-mid); margin-bottom:8px; }
+  .kpi-value { font-size:36px; font-weight:700; color:var(--white); letter-spacing:-0.03em; line-height:1; margin-bottom:4px; }
+  .kpi-desc  { font-size:11px; color:var(--gray); }
+  .kpi-bar   { position:absolute; bottom:0; left:0; height:2px; background:var(--red); width:0; transition:width 1s ease; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size:10px; font-weight:600; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--gray-mid);
+    margin-bottom:16px; display:flex; align-items:center; gap:8px;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  canvas { display:block; }
+
+  /* ══════════════════════════════════════════
+     LAYOUT ROWS
+  ══════════════════════════════════════════ */
+
+  /* ROW 1: trend (65%) + themes sidebar (35%) */
+  .row1 { display:grid; grid-template-columns:65fr 35fr; border-bottom:1px solid var(--border); }
+
+  /* ROW 2: stacked (40%) + channels (60%) */
+  .row2 { display:grid; grid-template-columns:40fr 60fr; border-bottom:1px solid var(--border); }
+
+  .panel { padding:24px 28px; border-right:1px solid var(--border); }
+  .panel:last-child { border-right:none; }
+
+  /* ── THEME LIST ── */
+  .theme-list { display:flex; flex-direction:column; gap:11px; }
+  .theme-item { cursor:pointer; transition:opacity 0.15s; }
+  .theme-item:hover { opacity:0.75; }
+  .theme-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+  .theme-name { font-size:12px; font-weight:500; color:var(--chalk); display:flex; align-items:center; gap:7px; }
+  .tdot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .theme-num { font-size:12px; font-weight:600; color:var(--gray-light); font-variant-numeric:tabular-nums; }
+  .tbar-track { height:3px; background:var(--border2); border-radius:2px; overflow:hidden; }
+  .tbar-fill  { height:100%; border-radius:2px; transition:width 0.5s ease; }
+
+  /* ── SOCIAL CARDS (big) ── */
+  .social-grid {
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:12px;
+    height:100%;
+    align-content:start;
+  }
+
+  .social-card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:28px 12px 22px;
+    text-align:center;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:10px;
+    transition:border-color 0.15s;
+    min-height:140px;
+  }
+  .social-card:hover { border-color:var(--border2); }
+
+  .social-icon-wrap {
+    width:44px; height:44px;
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px;
+    flex-shrink:0;
+  }
+
+  .social-num  { font-size:26px; font-weight:700; color:var(--white); letter-spacing:-0.02em; font-variant-numeric:tabular-nums; }
+  .social-label { font-size:10px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray-mid); }
+  .social-sub  { font-size:11px; color:var(--gray); }
+
+  /* engagement / views sub-stats inside card */
+  .social-stats { display:flex; gap:14px; margin-top:2px; }
+  .social-stat  { font-size:11px; color:var(--gray-mid); text-align:center; }
+  .social-stat strong { display:block; font-size:13px; font-weight:600; color:var(--gray-light); }
+
+  /* ── FEED ── */
+  .feed-wrap { padding:22px 28px 28px; }
+
+  .feed-controls { display:flex; align-items:center; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+  .feed-search {
+    flex:1; min-width:200px;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:4px; padding:6px 12px;
+    font-family:'Inter',sans-serif; font-size:12px; color:var(--chalk);
+    outline:none; transition:border-color 0.15s;
+  }
+  .feed-search::placeholder { color:var(--gray); }
+  .feed-search:focus { border-color:var(--border2); }
+  .feed-sort {
+    font-family:'Inter',sans-serif; font-size:11px; font-weight:500;
+    background:var(--card); border:1px solid var(--border);
+    color:var(--gray-light); border-radius:4px; padding:5px 10px; cursor:pointer; outline:none;
+  }
+  .feed-count { font-size:11px; color:var(--gray); }
+
+  .feed-grid {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:8px; max-height:500px; overflow-y:auto;
+  }
+  .feed-grid::-webkit-scrollbar { width:3px; }
+  .feed-grid::-webkit-scrollbar-track { background:var(--dark); }
+  .feed-grid::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+  .feed-item {
+    background:var(--card); border:1px solid var(--border);
+    border-left:3px solid var(--gray);
+    border-radius:0 5px 5px 0; padding:10px 12px;
+    display:flex; flex-direction:column; gap:5px;
+  }
+  .feed-meta { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .feed-author { font-size:12px; font-weight:600; color:var(--white); }
+  .feed-date   { font-size:10px; color:var(--gray-mid); }
+  .feed-tag    { font-size:10px; font-weight:600; padding:1px 7px; border-radius:3px; letter-spacing:0.03em; white-space:nowrap; }
+  .feed-text   { font-size:12px; color:var(--gray-light); line-height:1.45; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .feed-stats  { display:flex; gap:12px; }
+  .feed-stat   { font-size:11px; color:var(--gray-mid); display:flex; align-items:center; gap:3px; }
+
+  /* ── FOOTER ── */
+  footer { padding:12px 32px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+  footer span { font-size:11px; color:var(--gray-mid); display:flex; align-items:center; gap:7px; }
+  footer a { color:var(--red); text-decoration:none; }
+  footer a:hover { text-decoration:underline; }
+  .fbtn:focus-visible, .feed-search:focus-visible, .feed-sort:focus-visible { outline:2px solid var(--red); outline-offset:2px; }
+
+  /* ── RESPONSIVE ── */
+  header, .filters-bar, footer, .feed-wrap {
+    padding-left:max(32px, env(safe-area-inset-left, 0px));
+    padding-right:max(32px, env(safe-area-inset-right, 0px));
+  }
+  .panel, .feed-wrap, .row1 > *, .row2 > * { min-width:0; }
+  @media (max-width: 1000px) {
+    .row1, .row2 { grid-template-columns:1fr; }
+    .panel { border-right:none; border-bottom:1px solid var(--border); }
+    .panel:last-child { border-bottom:none; }
+    .kpi-row { grid-template-columns:repeat(2,1fr); }
+    .kpi-card:nth-child(2) { border-right:none; }
+    .kpi-card:nth-child(-n+2) { border-bottom:1px solid var(--border); }
+    .social-grid { grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); }
+  }
+  @media (max-width: 640px) {
+    header, .filters-bar, footer, .feed-wrap {
+      padding-left:max(16px, env(safe-area-inset-left, 0px));
+      padding-right:max(16px, env(safe-area-inset-right, 0px));
+    }
+    header { flex-wrap:wrap; }
+    .header-pills { flex-wrap:wrap; }
+    .panel { padding-left:16px; padding-right:16px; }
+    .kpi-card { padding:18px 16px; }
+    .kpi-value { font-size:28px; }
+    .feed-grid { grid-template-columns:1fr; }
+    .feed-search { min-width:0; }
+    footer { flex-direction:column; align-items:flex-start; gap:6px; }
+  }
+</style>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-area">
+    <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDIwMDAgMjAwMCI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogIzE1MTMxNDsKICAgICAgfQoKICAgICAgLmNscy0xLCAuY2xzLTIgewogICAgICAgIHN0cm9rZS13aWR0aDogMHB4OwogICAgICB9CgogICAgICAuY2xzLTIgewogICAgICAgIGZpbGw6ICNmZWZlZmU7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSJMYXllcl8xIiBkYXRhLW5hbWU9IkxheWVyIDEiPgogICAgPHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMjAwMCIgaGVpZ2h0PSIyMDAwIi8+CiAgPC9nPgogIDxnIGlkPSJMYXllcl8yIiBkYXRhLW5hbWU9IkxheWVyIDIiPgogICAgPGc+CiAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTYyMS45Nyw2MTQuOTNjMS41MS0xLjY2LDIuMTctMy42LDEuOTYtNS44Mi01LjYyLTYzLjE4LTEuNzMtMTI2LjcsMTEuNjktMTkwLjU3LDMuMjItMTUuMzEsMTEuMDYtNDYuOTksMjkuNTItNDguMzgsNS41Ny0uNDIsMTIuMDEuNzgsMTkuMzIsMy42LDEyLjQ3LDQuODQsMjYuNywxMS41Myw0Mi42OSwyMC4wNywzNS4wNiwxOC43NSw2Ny44NiwzOS45NSw5OC40Miw2My41OSw3LjkxLDYuMTEsMTYuMTMsMTIuNDcsMjQuNjYsMTkuMDYsMS4zNywxLjA3LDMuMTUsMS40OCw0Ljg2LDEuMTMsODAuMTQtMTYuMTQsMTY0LjE1LTEyLjgyLDI0Mi42MiwxMi42NCwxLjY1LjU0LDMuNDcuMDYsNC42My0xLjIzLDEzLjc1LTE1LjIzLDI3LjUxLTI5LjY3LDQxLjI4LTQzLjMyLDIxLjI4LTIxLjA4LDQ5LjU0LTQzLjM3LDgxLjE5LTY2LjAxLDEyLjY0LTkuMDQsMzEuODMtMTkuMTEsNDIuMDgtMS40NiwzLjAyLDUuMiw1LjI2LDExLjMyLDYuNzIsMTguMzMsMTIuNzksNjEuMzIsMTQuNDgsMTIyLjgyLDkuNTcsMTg1LjU2LS4xNSwyLjA1LjkxLDQsMi43Miw0Ljk5LDM2Ljc3LDE5LjkyLDc0LjU5LDQzLjQ0LDEwNi42LDcxLjUsMTIuNzMsMTEuMTgsMjMuNDcsMjIuNjEsMzIuMjQsMzQuMjgsNDQuNjgsNTkuNTMsMzkuOTIsMTM4LjQ2LDMyLjgxLDIwOC4zLTQuNDMsNDMuNjItOS44Myw4OC0xNi4xOSwxMzMuMTUtLjM0LDIuMzctMS42OSwzLjY5LTQuMDUsMy45NWwtMzcuNyw0LjM2Yy0uODQuMS0xLjYxLS41LTEuNzEtMS4zNCwwLS4wMiwwLS4wNCwwLS4wNy0uMDgtLjk5LS4wNy0yLC4wNS0zLjAyLDcuMTItNTkuNDIsMTIuODktMTE3LjExLDE3LjMzLTE3My4wNi41Mi02LjcsMS4xLTIwLjM2LDEuNzQtNDAuOTcuOTEtMjkuMzYtMi44LTYxLjgtMTguMjMtODguMDItMjYuNDctNDQuOS03Mi4zOC01My43Mi0xMjEuOTctNTEuNy0yNi4wMSwxLjA2LTUyLjg5LDUuMDctODAuNjQsMTIuMDQtNzIuNDMsMTguMjItMTM3LjYzLDUxLjM3LTE5NS42LDk5LjQ1LTQzLjM3LDM1Ljk2LTgxLjgxLDgwLjAyLTExNS4zNCwxMzIuMTctMTkuNTgsMzAuNDYtMzUuNzYsNjMuNC00OC41NSw5OC44Mi0xMC4xOSwyOC4xNi0xNi4zOCw1Ny45MS0xOC41Niw4OS4yNS0zLjksNTUuOTEsOS43MiwxMDguNDgsNDAuODUsMTU3LjcsMTkuNzMsMzEuMjMsNDUuMDcsNjIuNDcsNzYuMDMsOTMuNzMsMjEuMzcsMjEuNTYsNDQuNSw0NC43OCw2OS4zOCw2OS42Niw5LjM5LDkuMzksMTksMTkuOSwyOC44NCwzMS41MywyOS42NCwzNS4xMSw1Mi4wOCw3OC4zNSw1My42NCwxMjQuMjMuMyw4LjkyLS4zMywyNS44OS0xMy4zMiwyMy42NS0uODgtLjE0LTEuNjctLjYyLTIuMjQtMS4zMy0yLjc5LTMuNDgtNC42OS03LjMtNS43Mi0xMS40Ni02LjUtMjYuMTctMTcuNDktNTAuNTgtMzIuOTctNzMuMjEtMy42NC01LjM0LTcuNzQtOS44My0xMi4yOS0xMy40Ny0xMi43OS0xMC4yMi0yNy45OCwyLjk3LTE3LjE4LDE1LjU5LDIxLjQzLDI1LjA2LDM0LjY1LDUxLjEyLDQwLjI3LDg0LjM5LjI0LDEuMzkuMjUsMi43Ni4wNSw0LjExLS4yNSwxLjcxLS44MSwxLjgyLTEuNjkuMzMtNi4zMi0xMC43OC0xMi45NC0yMi4wMS0yMS40My0zMS4xMy0zMC43Ny0zMi44Ny02Ny44Ny01Ni41MS0xMDcuODktNzcuNjQtMzIuOTEtMTcuMzktNjguODYtMzUuNTUtMTA3Ljg2LTU0LjQ3LTQxLjUtMjAuMTUtODEuNC00Mi43OS0xMTkuNy02Ny45Mi0yMi42Ny0xNC44Ni00Mi45MS0zMS4yLTYyLjM4LTQ5LjIxLTE0LjQ4LTEzLjM3LTMxLjA4LTMxLjEzLTM1LjExLTUwLjktLjExLS41My4yMy0xLjA1Ljc4LTEuMTYuMjMtLjA1LjQ3LS4wMS42OC4xLDI3LjksMTUuMDYsNTUuOTMsMjguOTgsODQuMDksNDEuNzYsMi44LDEuMjgsNS44MywyLjEyLDkuMDksMi41NCwyLjE3LjI5LDQuMzEtLjc4LDUuMzktMi42OSwzLjQ4LTYuMjItMi4xNy0xMS40My02LjgtMTQuMjgtOS41Mi01Ljg2LTE4LjUtMTEuNTMtMjYuOTUtMTcuMDItMzguNi0yNS4wNy03MC4xMi01Ny4xMi05NC41Ny05Ni4xNS00Mi41Ni02Ny45LTY1LjEzLTE0Ny43NS02Ni44NC0yMjcuMjYtLjcyLTMyLjg0Ljk2LTYzLjcxLDUuMDQtOTIuNiwzLjctMjYuMTksMTEuNDYtNTQuOTgsMTguMDMtODEuNjIsMy40NS0xMy45NSwxMS4zMS0yNy44OCwxNS45Ny00Mi40NiwxLjc1LTUuNDYsMy44Ni0xMC43Miw2LjM1LTE1Ljc5LDUuNTQtMTEuMzUsMTEuMjItMjIuNDEsMTcuMDItMzMuMTksMTkuMDYtMzUuNDEsNDEuNDktNjcuMjcsNjcuMjktOTUuNloiLz4KICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMTI0My4yOSw5MzUuOThjMTEuOTYsMjcuNzUsMjYuMTQsNTAuNTksNTcuNzUsNTguNSw4LjQxLDIuMTIsMTYuNjcsNC4wNSwyNC43OCw1Ljc5LDQuMDUuODcsNy42MywyLjQsMTAuNzUsNC41OCwxMS4wNiw3Ljc4LDguODEsMzIuODcsOC4zOSw0NC41OC0uMDYsMS4zMS0uOTksMi40MS0yLjI3LDIuNjktMTIuMTYsMi42Ny0yMi41MSw1LjcyLTMxLjA4LDkuMTQtMi45NSwxLjE4LTQuNDIsMy40Ni00LjM4LDYuODUuMDgsOC4zNCw0LjIyLDExLjk0LDEyLjQyLDEwLjc4LDYuMy0uODksMTMtMi4xNSwyMC4xLTMuNzgsMS4wNy0uMjQsMi4xNC40MiwyLjM4LDEuNDguMDUuMjEuMDYuNDIuMDQuNjQtMS4wMSwxMC4wMS0zLjE0LDE5LjQ1LTYuNCwyOC4zMy0uNjcsMS44NS0yLjUsMy4wMi00LjQ2LDIuODctNS41Ny0uNDItMTEuMjUtLjc0LTE3LjAyLS45Ni00LjMxLS4xNy03LjYyLDEuOTYtOS45Miw2LjQtNy4yMywxMy45NSwxMCwxNC45NiwxOC4xMywxNS45NCwxLjI2LjE2LDIuMTUsMS4yOSwyLDIuNTMtLjA0LjMxLS4xNC42LS4yOS44Ny00Mi42OSw3My4xMS0xMTMuNCwxNDEuMTgtMjAyLjYzLDE0OC4zNi01My4xMSw0LjI4LTExMC42Ni04LjIxLTE1My4yNy00MC4zMi0xLjAyLS43OC0xLjIxLTIuMjMtLjQ0LTMuMjUuMDItLjAzLjA0LS4wNS4wNi0uMDgsMzguMDEtNDUuMzMsODMuNTQtNzcuOTQsMTM2LjYtOTcuODQsNS40MS0yLjAxLDE1LjE0LTguMDgsMTAuMjItMTUuNDQtNi42Mi05Ljg3LTIwLjEyLTMuNS0yOC41My0uMDUtMjUuNTUsMTAuNDYtNDYuOTcsMjEuOTMtNjQuMjQsMzQuNC0yNi41MSwxOS4xNi01MC41NCw0MS4zMy03Mi4xLDY2LjUxLTEuMywxLjUxLTMuNTcsMS42OC01LjA4LjM4LS4wMSwwLS4wMi0uMDItLjAzLS4wMy0xOC44NC0xNi41Ny0zOC4wNS0zNi45Ny00OC44MS01OS44Ni0uNDctMS4wMi0uMi0xLjguODEtMi4zMiw0LjcyLTIuNCw5LjY5LTQuNjIsMTQuOTEtNi42NSw0MC4yOC0xNS43LDgwLjMtMjUuODgsMTIwLjA4LTMwLjU1LDcuNjItLjkxLDEwLjc2LTQuODEsOS40Mi0xMS43MWwtLjA1LS40Yy0xLjA0LTYuNDMtNS42Ny05LjIxLTEzLjktOC4zNC00Ni44MSw1LTkyLjY5LDE3LjI2LTEzNy42NiwzNi43Ny0xLjA4LjQ3LTIuMzUtLjAzLTIuODItMS4xMS0uMDQtLjEtLjA4LS4yLS4xLS4zLTIuMzgtOS4yOC0zLjI1LTE4LjI4LTIuNTktMjcsLjMyLTQuMzMsMi44Mi03LjE0LDcuNS04LjQxLDcwLjYyLTE5LjI0LDE0NS41OS0yMS44NiwyMTcuNjEtMTUuMjEsMi42Mi4yNSw0Ljg0LS4yNCw2LjY1LTEuNDksMTAuNjUtNy4yMywyLjYyLTE2Ljc1LTYuNzUtMTguMDYtMTAuMDktMS4zOS0yMC4wNC0yLjQyLTI5Ljg0LTMuMDctNjAuMTktNC4wNS0xMjEuMDkuMzQtMTgyLjcxLDEzLjE3LS43NC4xNi0xLjQ2LS4zMS0xLjYxLTEuMDYtLjA3LS4zMS0uMDItLjY0LjEzLS45MywxNS4zMy0yOS4zNSwzOC40OC00OC43OCw2OS40Ni01OC4zLDIyLjI5LTYuODUsNDguNjEtOC4wMyw3Mi42My0xMS43NCwzMS43Ny00LjkyLDU3LjI0LTIwLjA3LDc2LjQzLTQ1LjQ2LDIxLjQ2LTI4LjQxLDQzLjMyLTY3LjE0LDg0LjYyLTY0LjgyLDIzLjgyLDEuMzMsMzYuNDksMTYuOTIsNDUuMTMsMzYuOTRaTTEyNDYuNDEsMTA4OC4wNmMzLjQ4LTcuMSw4Ljc5LTE0LjQ2LDE1Ljk0LTIyLjA2LDguNzYtOS4zMi0uMzgtMjEuNjYtMTEuNDMtMjEuNTgtMjEuNzEuMTMtNDEuNDEuMTctNTkuMTEuMS0xMi45OS0uMDgtMTkuMTQsMTMuMDUtOS40NCwyMi42MiwxMC44LDEwLjczLDE2Ljg3LDI1Ljg2LDI0LjAzLDM5LjI5LDUuNjcsMTAuNjMsMTYuODcsMTcuMywyNS45OSw1LjE0LDQuODUtNi40NSw5LjUzLTE0LjI4LDE0LjAzLTIzLjVaIi8+CiAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE0OTYuODksMTA4My43OGMtMi4xMi43Ny0zLjg0LDEuMDgtNS4xOS45My0zMi45MS0zLjk2LTY1LjItNS4xMS05Ni44OC0zLjQ1LTIuMTguMS0zLjE4LS45NC0zLTMuMTIuMzQtMy42OC44Ny02LjkzLDEuNjEtOS43NS43Mi0yLjc0LDIuNDktNC4yNiw1LjMxLTQuNTYsMjUuNjUtMi43NSw1Mi4xNy0zLjMsNzkuNTYtMS42NCw2LjM2LjM5LDEyLjE5LDEuMjksMTcuNDgsMi43Miw5LjUyLDIuNTQsMTEuNTYsMTQuOTgsMS4xMSwxOC44NloiLz4KICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMTQ4Ni4wNiwxMTMyLjg0YzYuNDcsMy4wNywyNS41NiwxMC45LDE5LjI0LDIxLjQ2LTMuMTcsNS4zMS03LjkyLDYuNDYtMTQuMjMsMy40NS0zMy43LTE2LjA1LTY5LjA1LTI3Ljc5LTEwNi4wNy0zNS4yMy0xLjU2LS4zLTIuMzYtMS4yNS0yLjM5LTIuODUtLjEyLTQuNzcsMS4yMS05LjUyLDMuOTgtMTQuMjUuNS0uODQsMS4yNC0xLjI3LDIuMjItMS4yOCw2LjAxLS4wOCwxMS43LjM5LDE3LjA3LDEuNDQsMjUuNjksNS4wMiw1Mi40MiwxNC4xMSw4MC4xOSwyNy4yN1oiLz4KICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMTE1My42MywxNDk0LjA4Yy04LjI5LDQuNDYtOC43OSwyMS43OC05LjI0LDMwLjItMS45OCwzNS4xNy0yLjkzLDY3LjAyLTIuODUsOTUuNTUuMDMsNi40NS0yLjkyLDEwLjU3LTguODYsMTIuMzctMTYuMDQsNC44MS0yMC45LTE5LjE2LTIxLjY2LTI5LjU3LTMuMjctNDUuMzgtMi4zNy05NC45MiwxNi4xNy0xMzUuOTQsNy40Ny0xNi41MiwxNi42NC0zMS4yNCwyNy41LTQ0LjE3LDMxLjUzLTM3LjUyLDY3LjY3LTY2LjMxLDEwMS44NC0xMDAuMjMsNTAuNjItNTAuMjQsOTMuMzgtMTExLjIxLDExOS43OC0xNzcuODIuNjktMS43MywxLjkxLTIuMywzLjY4LTEuNzFsMzUuNjYsMTIuMDFjMS4xMi4zNywxLjc2LDEuNTUsMS40NiwyLjY5LTIsNy4zNC00LjQ3LDE0LjExLTcuNCwyMC4zMi0zNS45Myw3NS42OS04NC4yNSwxNDIuMDUtMTQ0Ljk2LDE5OS4xLTIxLjI5LDIwLjAzLTQyLjE3LDM5Ljc1LTYyLjYzLDU5LjE2LTguNjEsOC4xOC0yMC4xLDIyLjcyLTE2LjM0LDM1LjQzLDMuNSwxMS44OSw0LjUxLDIyLjYyLDMuMDcsMzQuOTYtMy45MywzMy4xNC02LjUxLDY3LjY1LTcuNzYsMTAzLjUzLS4xNSw0LjU4LTEuOCw4LjQtNC45NCwxMS40Ni0xLjg0LDEuOC00Ljc5LDEuNzYtNi41OS0uMDgtLjE2LS4xNi0uMy0uMzQtLjQ0LS41Mi0xLjkxLTIuNjItMi44OS01LjUyLTIuOTItOC42OS0uMzUtMzAuOTkuODEtNjYuMTksMy40OC0xMDUuNi42OC05LjgyLTUuNzItMTguMDMtMTYuMDQtMTIuNDRaIi8+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4=" alt="FatCat9">
+    <div class="vline"></div>
+    <div class="header-titles">
+      <h1>Drummond — Territorial Social Intelligence</h1>
+      <p>Mention monitor · 2013 – 2026</p>
+    </div>
+  </div>
+  <div class="header-pills">
+    <span class="pill">1,485 mentions</span>
+    <span class="pill">5 channels</span>
+    <span class="pill">8 themes</span>
+  </div>
+</header>
+
+<!-- FILTERS BAR -->
+<div class="filters-bar">
+  <div class="filter-group">
+    <span class="filter-label">Metric</span>
+    <button class="fbtn active" data-view="menciones" onclick="setView('menciones',this)">Mentions</button>
+    <button class="fbtn" data-view="engagement" onclick="setView('engagement',this)">Engagement</button>
+    <button class="fbtn" data-view="vistas" onclick="setView('vistas',this)">Views</button>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group">
+    <span class="filter-label">Period</span>
+    <button class="fbtn active" data-period="all" onclick="setPeriod('all',this)">All</button>
+    <button class="fbtn" data-period="2020" onclick="setPeriod('2020',this)">2020+</button>
+    <button class="fbtn" data-period="2023" onclick="setPeriod('2023',this)">2023+</button>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group" id="temaButtons">
+    <span class="filter-label">Theme</span>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-row">
+  <div class="kpi-card">
+    <div class="kpi-label">Mentions</div>
+    <div class="kpi-value" id="kpi1">—</div>
+    <div class="kpi-desc">conversations monitored</div>
+    <div class="kpi-bar" id="acc1"></div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Engagement</div>
+    <div class="kpi-value" id="kpi2">—</div>
+    <div class="kpi-desc">cumulative interactions</div>
+    <div class="kpi-bar" id="acc2"></div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Views</div>
+    <div class="kpi-value" id="kpi3">—</div>
+    <div class="kpi-desc">impressions recorded</div>
+    <div class="kpi-bar" id="acc3"></div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">YoY Growth</div>
+    <div class="kpi-value" id="kpi4">—</div>
+    <div class="kpi-desc" id="kpi4sub"></div>
+    <div class="kpi-bar" id="acc4"></div>
+  </div>
+</div>
+
+<!-- ROW 1: trend + themes -->
+<div class="row1">
+  <div class="panel">
+    <div class="section-label">Annual trend</div>
+    <canvas id="evolutionChart" height="200"></canvas>
+  </div>
+  <div class="panel">
+    <div class="section-label">By theme</div>
+    <div class="theme-list" id="themeList"></div>
+  </div>
+</div>
+
+<!-- ROW 2: stacked + channels -->
+<div class="row2">
+  <div class="panel">
+    <div class="section-label">Composition by year</div>
+    <canvas id="stackedChart" height="240"></canvas>
+  </div>
+  <div class="panel">
+    <div class="section-label">Channels</div>
+    <div class="social-grid" id="socialGrid"></div>
+  </div>
+</div>
+
+<!-- FEED -->
+<div class="feed-wrap">
+  <div class="section-label">Classified mentions <span class="feed-count" id="feedCount"></span></div>
+  <div class="feed-controls">
+    <input class="feed-search" id="feedSearch" type="text" placeholder="Search by author, text, channel…" oninput="renderFeed()">
+    <select class="feed-sort" id="feedSort" onchange="renderFeed()">
+      <option value="engagement">Highest engagement</option>
+      <option value="vistas">Most views</option>
+      <option value="reciente">Most recent</option>
+      <option value="antiguo">Oldest</option>
+    </select>
+  </div>
+  <div class="feed-grid" id="feedGrid"></div>
+</div>
+
+<footer>
+  <span>
+    <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDIwMDAgMjAwMCI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogIzE1MTMxNDsKICAgICAgfQoKICAgICAgLmNscy0xLCAuY2xzLTIgewogICAgICAgIHN0cm9rZS13aWR0aDogMHB4OwogICAgICB9CgogICAgICAuY2xzLTIgewogICAgICAgIGZpbGw6ICNmZWZlZmU7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSJMYXllcl8xIiBkYXRhLW5hbWU9IkxheWVyIDEiPgogICAgPHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMjAwMCIgaGVpZ2h0PSIyMDAwIi8+CiAgPC9nPgogIDxnIGlkPSJMYXllcl8yIiBkYXRhLW5hbWU9IkxheWVyIDIiPgogICAgPGc+CiAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTYyMS45Nyw2MTQuOTNjMS41MS0xLjY2LDIuMTctMy42LDEuOTYtNS44Mi01LjYyLTYzLjE4LTEuNzMtMTI2LjcsMTEuNjktMTkwLjU3LDMuMjItMTUuMzEsMTEuMDYtNDYuOTksMjkuNTItNDguMzgsNS41Ny0uNDIsMTIuMDEuNzgsMTkuMzIsMy42LDEyLjQ3LDQuODQsMjYuNywxMS41Myw0Mi42OSwyMC4wNywzNS4wNiwxOC43NSw2Ny44NiwzOS45NSw5OC40Miw2My41OSw3LjkxLDYuMTEsMTYuMTMsMTIuNDcsMjQuNjYsMTkuMDYsMS4zNywxLjA3LDMuMTUsMS40OCw0Ljg2LDEuMTMsODAuMTQtMTYuMTQsMTY0LjE1LTEyLjgyLDI0Mi42MiwxMi42NCwxLjY1LjU0LDMuNDcuMDYsNC42My0xLjIzLDEzLjc1LTE1LjIzLDI3LjUxLTI5LjY3LDQxLjI4LTQzLjMyLDIxLjI4LTIxLjA4LDQ5LjU0LTQzLjM3LDgxLjE5LTY2LjAxLDEyLjY0LTkuMDQsMzEuODMtMTkuMTEsNDIuMDgtMS40NiwzLjAyLDUuMiw1LjI2LDExLjMyLDYuNzIsMTguMzMsMTIuNzksNjEuMzIsMTQuNDgsMTIyLjgyLDkuNTcsMTg1LjU2LS4xNSwyLjA1LjkxLDQsMi43Miw0Ljk5LDM2Ljc3LDE5LjkyLDc0LjU5LDQzLjQ0LDEwNi42LDcxLjUsMTIuNzMsMTEuMTgsMjMuNDcsMjIuNjEsMzIuMjQsMzQuMjgsNDQuNjgsNTkuNTMsMzkuOTIsMTM4LjQ2LDMyLjgxLDIwOC4zLTQuNDMsNDMuNjItOS44Myw4OC0xNi4xOSwxMzMuMTUtLjM0LDIuMzctMS42OSwzLjY5LTQuMDUsMy45NWwtMzcuNyw0LjM2Yy0uODQuMS0xLjYxLS41LTEuNzEtMS4zNCwwLS4wMiwwLS4wNCwwLS4wNy0uMDgtLjk5LS4wNy0yLC4wNS0zLjAyLDcuMTItNTkuNDIsMTIuODktMTE3LjExLDE3LjMzLTE3My4wNi41Mi02LjcsMS4xLTIwLjM2LDEuNzQtNDAuOTcuOTEtMjkuMzYtMi44LTYxLjgtMTguMjMtODguMDItMjYuNDctNDQuOS03Mi4zOC01My43Mi0xMjEuOTctNTEuNy0yNi4wMSwxLjA2LTUyLjg5LDUuMDctODAuNjQsMTIuMDQtNzIuNDMsMTguMjItMTM3LjYzLDUxLjM3LTE5NS42LDk5LjQ1LTQzLjM3LDM1Ljk2LTgxLjgxLDgwLjAyLTExNS4zNCwxMzIuMTctMTkuNTgsMzAuNDYtMzUuNzYsNjMuNC00OC41NSw5OC44Mi0xMC4xOSwyOC4xNi0xNi4zOCw1Ny45MS0xOC41Niw4OS4yNS0zLjksNTUuOTEsOS43MiwxMDguNDgsNDAuODUsMTU3LjcsMTkuNzMsMzEuMjMsNDUuMDcsNjIuNDcsNzYuMDMsOTMuNzMsMjEuMzcsMjEuNTYsNDQuNSw0NC43OCw2OS4zOCw2OS42Niw5LjM5LDkuMzksMTksMTkuOSwyOC44NCwzMS41MywyOS42NCwzNS4xMSw1Mi4wOCw3OC4zNSw1My42NCwxMjQuMjMuMyw4LjkyLS4zMywyNS44OS0xMy4zMiwyMy42NS0uODgtLjE0LTEuNjctLjYyLTIuMjQtMS4zMy0yLjc5LTMuNDgtNC42OS03LjMtNS43Mi0xMS40Ni02LjUtMjYuMTctMTcuNDktNTAuNTgtMzIuOTctNzMuMjEtMy42NC01LjM0LTcuNzQtOS44My0xMi4yOS0xMy40Ny0xMi43OS0xMC4yMi0yNy45OCwyLjk3LTE3LjE4LDE1LjU5LDIxLjQzLDI1LjA2LDM0LjY1LDUxLjEyLDQwLjI3LDg0LjM5LjI0LDEuMzkuMjUsMi43Ni4wNSw0LjExLS4yNSwxLjcxLS44MSwxLjgyLTEuNjkuMzMtNi4zMi0xMC43OC0xMi45NC0yMi4wMS0yMS40My0zMS4xMy0zMC43Ny0zMi44Ny02Ny44Ny01Ni41MS0xMDcuODktNzcuNjQtMzIuOTEtMTcuMzktNjguODYtMzUuNTUtMTA3Ljg2LTU0LjQ3LTQxLjUtMjAuMTUtODEuNC00Mi43OS0xMTkuNy02Ny45Mi0yMi42Ny0xNC44Ni00Mi45MS0zMS4yLTYyLjM4LTQ5LjIxLTE0LjQ4LTEzLjM3LTMxLjA4LTMxLjEzLTM1LjExLTUwLjktLjExLS41My4yMy0xLjA1Ljc4LTEuMTYuMjMtLjA1LjQ3LS4wMS42OC4xLDI3LjksMTUuMDYsNTUuOTMsMjguOTgsODQuMDksNDEuNzYsMi44LDEuMjgsNS44MywyLjEyLDkuMDksMi41NCwyLjE3LjI5LDQuMzEtLjc4LDUuMzktMi42OSwzLjQ4LTYuMjItMi4xNy0xMS40My02LjgtMTQuMjgtOS41Mi01Ljg2LTE4LjUtMTEuNTMtMjYuOTUtMTcuMDItMzguNi0yNS4wNy03MC4xMi01Ny4xMi05NC41Ny05Ni4xNS00Mi41Ni02Ny45LTY1LjEzLTE0Ny43NS02Ni44NC0yMjcuMjYtLjcyLTMyLjg0Ljk2LTYzLjcxLDUuMDQtOTIuNiwzLjctMjYuMTksMTEuNDYtNTQuOTgsMTguMDMtODEuNjIsMy40NS0xMy45NSwxMS4zMS0yNy44OCwxNS45Ny00Mi40NiwxLjc1LTUuNDYsMy44Ni0xMC43Miw2LjM1LTE1Ljc5LDUuNTQtMTEuMzUsMTEuMjItMjIuNDEsMTcuMDItMzMuMTksMTkuMDYtMzUuNDEsNDEuNDktNjcuMjcsNjcuMjktOTUuNloiLz4KICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMTI0My4yOSw5MzUuOThjMTEuOTYsMjcuNzUsMjYuMTQsNTAuNTksNTcuNzUsNTguNSw4LjQxLDIuMTIsMTYuNjcsNC4wNSwyNC43OCw1Ljc5LDQuMDUuODcsNy42MywyLjQsMTAuNzUsNC41OCwxMS4wNiw3Ljc4LDguODEsMzIuODcsOC4zOSw0NC41OC0uMDYsMS4zMS0uOTksMi40MS0yLjI3LDIuNjktMTIuMTYsMi42Ny0yMi41MSw1LjcyLTMxLjA4LDkuMTQtMi45NSwxLjE4LTQuNDIsMy40Ni00LjM4LDYuODUuMDgsOC4zNCw0LjIyLDExLjk0LDEyLjQyLDEwLjc4LDYuMy0uODksMTMtMi4xNSwyMC4xLTMuNzgsMS4wNy0uMjQsMi4xNC40MiwyLjM4LDEuNDguMDUuMjEuMDYuNDIuMDQuNjQtMS4wMSwxMC4wMS0zLjE0LDE5LjQ1LTYuNCwyOC4zMy0uNjcsMS44NS0yLjUsMy4wMi00LjQ2LDIuODctNS41Ny0uNDItMTEuMjUtLjc0LTE3LjAyLS45Ni00LjMxLS4xNy03LjYyLDEuOTYtOS45Miw2LjQtNy4yMywxMy45NSwxMCwxNC45NiwxOC4xMywxNS45NCwxLjI2LjE2LDIuMTUsMS4yOSwyLDIuNTMtLjA0LjMxLS4xNC42LS4yOS44Ny00Mi42OSw3My4xMS0xMTMuNCwxNDEuMTgtMjAyLjYzLDE0OC4zNi01My4xMSw0LjI4LTExMC42Ni04LjIxLTE1My4yNy00MC4zMi0xLjAyLS43OC0xLjIxLTIuMjMtLjQ0LTMuMjUuMDItLjAzLjA0LS4wNS4wNi0uMDgsMzguMDEtNDUuMzMsODMuNTQtNzcuOTQsMTM2LjYtOTcuODQsNS40MS0yLjAxLDE1LjE0LTguMDgsMTAuMjItMTUuNDQtNi42Mi05Ljg3LTIwLjEyLTMuNS0yOC41My0uMDUtMjUuNTUsMTAuNDYtNDYuOTcsMjEuOTMtNjQuMjQsMzQuNC0yNi41MSwxOS4xNi01MC41NCw0MS4zMy03Mi4xLDY2LjUxLTEuMywxLjUxLTMuNTcsMS42OC01LjA4LjM4LS4wMSwwLS4wMi0uMDItLjAzLS4wMy0xOC44NC0xNi41Ny0zOC4wNS0zNi45Ny00OC44MS01OS44Ni0uNDctMS4wMi0uMi0xLjguODEtMi4zMiw0LjcyLTIuNCw5LjY5LTQuNjIsMTQuOTEtNi42NSw0MC4yOC0xNS43LDgwLjMtMjUuODgsMTIwLjA4LTMwLjU1LDcuNjItLjkxLDEwLjc2LTQuODEsOS40Mi0xMS43MWwtLjA1LS40Yy0xLjA0LTYuNDMtNS42Ny05LjIxLTEzLjktOC4zNC00Ni44MSw1LTkyLjY5LDE3LjI2LTEzNy42NiwzNi43Ny0xLjA4LjQ3LTIuMzUtLjAzLTIuODItMS4xMS0uMDQtLjEtLjA4LS4yLS4xLS4zLTIuMzgtOS4yOC0zLjI1LTE4LjI4LTIuNTktMjcsLjMyLTQuMzMsMi44Mi03LjE0LDcuNS04LjQxLDcwLjYyLTE5LjI0LDE0NS41OS0yMS44NiwyMTcuNjEtMTUuMjEsMi42Mi4yNSw0Ljg0LS4yNCw2LjY1LTEuNDksMTAuNjUtNy4yMywyLjYyLTE2Ljc1LTYuNzUtMTguMDYtMTAuMDktMS4zOS0yMC4wNC0yLjQyLTI5Ljg0LTMuMDctNjAuMTktNC4wNS0xMjEuMDkuMzQtMTgyLjcxLDEzLjE3LS43NC4xNi0xLjQ2LS4zMS0xLjYxLTEuMDYtLjA3LS4zMS0uMDItLjY0LjEzLS45MywxNS4zMy0yOS4zNSwzOC40OC00OC43OCw2OS40Ni01OC4zLDIyLjI5LTYuODUsNDguNjEtOC4wMyw3Mi42My0xMS43NCwzMS43Ny00LjkyLDU3LjI0LTIwLjA3LDc2LjQzLTQ1LjQ2LDIxLjQ2LTI4LjQxLDQzLjMyLTY3LjE0LDg0LjYyLTY0LjgyLDIzLjgyLDEuMzMsMzYuNDksMTYuOTIsNDUuMTMsMzYuOTRaTTEyNDYuNDEsMTA4OC4wNmMzLjQ4LTcuMSw4Ljc5LTE0LjQ2LDE1Ljk0LTIyLjA2LDguNzYtOS4zMi0uMzgtMjEuNjYtMTEuNDMtMjEuNTgtMjEuNzEuMTMtNDEuNDEuMTctNTkuMTEuMS0xMi45OS0uMDgtMTkuMTQsMTMuMDUtOS40NCwyMi42MiwxMC44LDEwLjczLDE2Ljg3LDI1Ljg2LDI0LjAzLDM5LjI5LDUuNjcsMTAuNjMsMTYuODcsMTcuMywyNS45OSw1LjE0LDQuODUtNi40NSw5LjUzLTE0LjI4LDE0LjAzLTIzLjVaIi8+CiAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE0OTYuODksMTA4My43OGMtMi4xMi43Ny0zLjg0LDEuMDgtNS4xOS45My0zMi45MS0zLjk2LTY1LjItNS4xMS05Ni44OC0zLjQ1LTIuMTguMS0zLjE4LS45NC0zLTMuMTIuMzQtMy42OC44Ny02LjkzLDEuNjEtOS43NS43Mi0yLjc0LDIuNDktNC4yNiw1LjMxLTQuNTYsMjUuNjUtMi43NSw1Mi4xNy0zLjMsNzkuNTYtMS42NCw2LjM2LjM5LDEyLjE5LDEuMjksMTcuNDgsMi43Miw5LjUyLDIuNTQsMTEuNTYsMTQuOTgsMS4xMSwxOC44NloiLz4KICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMTQ4Ni4wNiwxMTMyLjg0YzYuNDcsMy4wNywyNS41NiwxMC45LDE5LjI0LDIxLjQ2LTMuMTcsNS4zMS03LjkyLDYuNDYtMTQuMjMsMy40NS0zMy43LTE2LjA1LTY5LjA1LTI3Ljc5LTEwNi4wNy0zNS4yMy0xLjU2LS4zLTIuMzYtMS4yNS0yLjM5LTIuODUtLjEyLTQuNzcsMS4yMS05LjUyLDMuOTgtMTQuMjUuNS0uODQsMS4yNC0xLjI3LDIuMjItMS4yOCw2LjAxLS4wOCwxMS43LjM5LDE3LjA3LDEuNDQsMjUuNjksNS4wMiw1Mi40MiwxNC4xMSw4MC4xOSwyNy4yN1oiLz4KICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMTE1My42MywxNDk0LjA4Yy04LjI5LDQuNDYtOC43OSwyMS43OC05LjI0LDMwLjItMS45OCwzNS4xNy0yLjkzLDY3LjAyLTIuODUsOTUuNTUuMDMsNi40NS0yLjkyLDEwLjU3LTguODYsMTIuMzctMTYuMDQsNC44MS0yMC45LTE5LjE2LTIxLjY2LTI5LjU3LTMuMjctNDUuMzgtMi4zNy05NC45MiwxNi4xNy0xMzUuOTQsNy40Ny0xNi41MiwxNi42NC0zMS4yNCwyNy41LTQ0LjE3LDMxLjUzLTM3LjUyLDY3LjY3LTY2LjMxLDEwMS44NC0xMDAuMjMsNTAuNjItNTAuMjQsOTMuMzgtMTExLjIxLDExOS43OC0xNzcuODIuNjktMS43MywxLjkxLTIuMywzLjY4LTEuNzFsMzUuNjYsMTIuMDFjMS4xMi4zNywxLjc2LDEuNTUsMS40NiwyLjY5LTIsNy4zNC00LjQ3LDE0LjExLTcuNCwyMC4zMi0zNS45Myw3NS42OS04NC4yNSwxNDIuMDUtMTQ0Ljk2LDE5OS4xLTIxLjI5LDIwLjAzLTQyLjE3LDM5Ljc1LTYyLjYzLDU5LjE2LTguNjEsOC4xOC0yMC4xLDIyLjcyLTE2LjM0LDM1LjQzLDMuNSwxMS44OSw0LjUxLDIyLjYyLDMuMDcsMzQuOTYtMy45MywzMy4xNC02LjUxLDY3LjY1LTcuNzYsMTAzLjUzLS4xNSw0LjU4LTEuOCw4LjQtNC45NCwxMS40Ni0xLjg0LDEuOC00Ljc5LDEuNzYtNi41OS0uMDgtLjE2LS4xNi0uMy0uMzQtLjQ0LS41Mi0xLjkxLTIuNjItMi44OS01LjUyLTIuOTItOC42OS0uMzUtMzAuOTkuODEtNjYuMTksMy40OC0xMDUuNi42OC05LjgyLTUuNzItMTguMDMtMTYuMDQtMTIuNDRaIi8+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4=" style="width:18px;height:18px;border-radius:3px;" alt="FatCat9">
+    FatCat9 · HumanTrends · POC Drummond · Jun 2026
+  </span>
+  <span><a href="https://humantrends.my.canva.site/poc-drummond" target="_blank">View full report ↗</a></span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const COLORS = {
+  'CSR & Community':        '#d92b2b',
+  'Operations':            '#888',
+  'Employment & Labor':       '#e06060',
+  'Other':                   '#444',
+  'Environment':         '#aaa',
+  'Conflict & Territory': '#a01e1e',
+  'Education':              '#c0c0c0',
+  'Reputation':             '#666',
+};
+const TEMAS = Object.keys(COLORS);
+const KEY_LABEL = {Menciones:'Mentions', Engagement:'Engagement', Vistas:'Views'};
+
+const SOCIAL_ICONS = {
+  Instagram: { icon:'📸', bg:'rgba(193,53,132,0.15)', color:'#c13584' },
+  X:         { icon:'✕',  bg:'rgba(255,255,255,0.08)', color:'#ccc' },
+  Facebook:  { icon:'f',  bg:'rgba(24,119,242,0.15)', color:'#1877f2' },
+  News:      { icon:'📰', bg:'rgba(180,180,180,0.1)', color:'#aaa' },
+  TikTok:    { icon:'▶',  bg:'rgba(105,201,208,0.15)', color:'#69c9d0' },
+};
+
+const BY_YEAR = [
+  {Year:2013,Menciones:4,   Engagement:63,    Vistas:0},
+  {Year:2014,Menciones:23,  Engagement:8168,  Vistas:0},
+  {Year:2015,Menciones:20,  Engagement:17541, Vistas:0},
+  {Year:2016,Menciones:22,  Engagement:1674,  Vistas:0},
+  {Year:2017,Menciones:55,  Engagement:14627, Vistas:0},
+  {Year:2018,Menciones:58,  Engagement:7078,  Vistas:0},
+  {Year:2019,Menciones:68,  Engagement:5760,  Vistas:0},
+  {Year:2020,Menciones:90,  Engagement:10344, Vistas:0},
+  {Year:2021,Menciones:100, Engagement:14232, Vistas:158},
+  {Year:2022,Menciones:142, Engagement:21749, Vistas:247049},
+  {Year:2023,Menciones:145, Engagement:19126, Vistas:381967},
+  {Year:2024,Menciones:199, Engagement:87121, Vistas:492778},
+  {Year:2025,Menciones:274, Engagement:63858, Vistas:1251419},
+  {Year:2026,Menciones:285, Engagement:91271, Vistas:1563783},
+];
+
+const THEMES_BY_YEAR = [
+  {Year:2020,Tema:'Conflict & Territory',count:3},{Year:2020,Tema:'Education',count:1},{Year:2020,Tema:'Employment & Labor',count:16},{Year:2020,Tema:'Environment',count:6},{Year:2020,Tema:'Operations',count:12},{Year:2020,Tema:'Other',count:17},{Year:2020,Tema:'CSR & Community',count:32},{Year:2020,Tema:'Reputation',count:3},
+  {Year:2021,Tema:'Conflict & Territory',count:1},{Year:2021,Tema:'Education',count:1},{Year:2021,Tema:'Employment & Labor',count:10},{Year:2021,Tema:'Environment',count:10},{Year:2021,Tema:'Operations',count:24},{Year:2021,Tema:'Other',count:14},{Year:2021,Tema:'CSR & Community',count:39},{Year:2021,Tema:'Reputation',count:1},
+  {Year:2022,Tema:'Conflict & Territory',count:2},{Year:2022,Tema:'Education',count:2},{Year:2022,Tema:'Employment & Labor',count:19},{Year:2022,Tema:'Environment',count:14},{Year:2022,Tema:'Operations',count:25},{Year:2022,Tema:'Other',count:26},{Year:2022,Tema:'CSR & Community',count:51},{Year:2022,Tema:'Reputation',count:3},
+  {Year:2023,Tema:'Conflict & Territory',count:3},{Year:2023,Tema:'Education',count:5},{Year:2023,Tema:'Employment & Labor',count:14},{Year:2023,Tema:'Environment',count:18},{Year:2023,Tema:'Operations',count:17},{Year:2023,Tema:'Other',count:19},{Year:2023,Tema:'CSR & Community',count:67},{Year:2023,Tema:'Reputation',count:2},
+  {Year:2024,Tema:'Conflict & Territory',count:2},{Year:2024,Tema:'Education',count:7},{Year:2024,Tema:'Employment & Labor',count:31},{Year:2024,Tema:'Environment',count:20},{Year:2024,Tema:'Operations',count:32},{Year:2024,Tema:'Other',count:15},{Year:2024,Tema:'CSR & Community',count:89},{Year:2024,Tema:'Reputation',count:3},
+  {Year:2025,Tema:'Conflict & Territory',count:6},{Year:2025,Tema:'Education',count:7},{Year:2025,Tema:'Employment & Labor',count:53},{Year:2025,Tema:'Environment',count:22},{Year:2025,Tema:'Operations',count:36},{Year:2025,Tema:'Other',count:34},{Year:2025,Tema:'CSR & Community',count:112},{Year:2025,Tema:'Reputation',count:4},
+  {Year:2026,Tema:'Conflict & Territory',count:19},{Year:2026,Tema:'Education',count:4},{Year:2026,Tema:'Employment & Labor',count:46},{Year:2026,Tema:'Environment',count:22},{Year:2026,Tema:'Operations',count:77},{Year:2026,Tema:'Other',count:52},{Year:2026,Tema:'CSR & Community',count:61},{Year:2026,Tema:'Reputation',count:4},
+];
+
+const THEME_DIST = [
+  {Tema:'CSR & Community',        Menciones:514, Engagement:65019,  Vistas:473984},
+  {Tema:'Operations',            Menciones:279, Engagement:116910, Vistas:893969},
+  {Tema:'Employment & Labor',       Menciones:221, Engagement:84410,  Vistas:1306908},
+  {Tema:'Other',                   Menciones:219, Engagement:51088,  Vistas:827739},
+  {Tema:'Environment',         Menciones:153, Engagement:14360,  Vistas:75816},
+  {Tema:'Conflict & Territory', Menciones:42,  Engagement:23824,  Vistas:333343},
+  {Tema:'Education',              Menciones:32,  Engagement:1810,   Vistas:2252},
+  {Tema:'Reputation',             Menciones:25,  Engagement:5191,   Vistas:23143},
+];
+
+const SOCIAL = [
+  {Red:'Instagram', Menciones:1298, Engagement:317591, Vistas:3267879},
+  {Red:'X',         Menciones:122,  Engagement:26470,  Vistas:388547},
+  {Red:'Facebook',  Menciones:47,   Engagement:5351,   Vistas:0},
+  {Red:'News',      Menciones:12,   Engagement:0,      Vistas:0},
+  {Red:'TikTok',    Menciones:6,    Engagement:13200,  Vistas:280728},
+];
+
+const ALL_POSTS = [
+  {autor:'EL TIEMPO',fecha:'2024-03-02',texto:"The multinational Drummond shipped 192,500 metric tons of coal from Cesar to Turkey, the largest dry bulk cargo ever loaded on a single vessel in Colombia. It used the Newcastlemax ship \"Samjohn Argonaut,\" which docked at Puerto Drummond's direct-loading pier.",engagement:22390,vistas:0,red:'Instagram',tema:'Operations'},
+  {autor:'thephotosociety',fecha:'2015-12-04',texto:'Photo by @stephenedwardferry | Cesar, Colombia | 2014. A vein of coal in the Pribbenow mine, owned by the Alabama-based Drummond company. Drummond digs up approximately 27 million tons of coal a year from its mines in Colombia, which have estimated reserves of 7 billion tons.',engagement:16652,vistas:0,red:'Instagram',tema:'Operations'},
+  {autor:'Acá Entre Nos | News',fecha:'2024-04-24',texto:"The multinational Drummond shipped 192,500 metric tons of coal from Cesar to Turkey, the largest dry bulk cargo loaded on a single vessel in Colombia. The Newcastlemax ship \"Samjohn Argonaut\" docked at Puerto Drummond's direct-loading pier.",engagement:12298,vistas:0,red:'Instagram',tema:'Operations'},
+  {autor:'Cristian Andres Ramirez Garcia',fecha:'2026-03-23',texto:"Freight train drives Colombia's railway revival. Locomotive 5111, hauling 27 Prodeco platforms, was spotted at the Puerto Berrío (Antioquia) level crossing, moving iron from the Port of Santa Marta to La Dorada (Caldas).",engagement:11156,vistas:603775,red:'Instagram',tema:'Other'},
+  {autor:'Alejandra Azcárate',fecha:'2017-12-12',texto:"One of the things I enjoy most about my job is getting to see unimaginable places. Here I am arriving in La Loma (Cesar), home to the most important coal mine in our country. Drummond employs more than four thousand people.",engagement:10625,vistas:0,red:'Instagram',tema:'Employment & Labor'},
+  {autor:'Radio Maravilla Stereo 105.7',fecha:'2025-09-19',texto:"The mining situation in Cesar is turning worrying. This Friday, September 19, mining industry workers are holding a sit-in, saying they will not allow themselves to be left without work.",engagement:9746,vistas:424130,red:'Instagram',tema:'Employment & Labor'},
+  {autor:'Luis F Madriñan',fecha:'2026-05-17',texto:"Colleagues at Cerrejón and across Cesar's mining belt: wearing my miner's helmet, I speak to you from the heart. Let's defend jobs, formal mining and the future of our families.",engagement:9035,vistas:63938,red:'Instagram',tema:'Employment & Labor'},
+  {autor:'Claudia Margarita Zuleta M.',fecha:'2025-09-01',texto:"While banning coal exports to Israel, he punishes Cesar and La Guajira. Drummond had 8.2 million tons of coal under contract that are now suspended.",engagement:6065,vistas:115622,red:'Instagram',tema:'Employment & Labor'},
+  {autor:'Caracol Radio',fecha:'2026-03-18',texto:"Salvatore Mancuso and a witness accuse Drummond's former head of security of handing over the list of union members who were to be killed. \"This information was delivered by Colonel (ret.) Rodríguez,\" Mancuso said.",engagement:6018,vistas:205267,red:'TikTok',tema:'Employment & Labor'},
+  {autor:'Gustavo Petro',fecha:'2026-03-23',texto:"Colombia's rail network must keep the inter-oceanic principle. It must connect Pacific Ocean ports with the Atlantic. One of the sections under study is the Dorada–Chiriguaná corridor.",engagement:5991,vistas:196775,red:'X',tema:'Conflict & Territory'},
+  {autor:'Jose Ching | Origen Valledupar',fecha:'2022-05-28',texto:"Injured miner proposes to his partner at the clinic. Álvaro Javier Daza, one of the Drummond miners injured on the road from La Jagua de Ibirico to La Loma (Cesar), asked his partner to marry him.",engagement:5691,vistas:127307,red:'Instagram',tema:'Employment & Labor'},
+  {autor:'Gustavo Bolivar',fecha:'2022-02-06',texto:"Look at the endless train. It carries coal from La Jagua in Cesar to the Caribbean ports. In 2 hours I saw it pass twice with 160 cars x 60 tons. It wouldn't be so bad if children weren't dying of hunger in the departments where this wealth is extracted.",engagement:5664,vistas:0,red:'Instagram',tema:'Environment'},
+  {autor:'EL PILÓN - ES LO NUESTRO',fecha:'2025-08-31',texto:"The National Union of Drummond Workers (Sintradrummond) announced its break with President Gustavo Petro's anti-mining policy, following the decree banning coal exports to Israel.",engagement:5150,vistas:0,red:'Instagram',tema:'Employment & Labor'},
+  {autor:'Carlos Olivo | Comunicador',fecha:'2026-04-22',texto:"Before you weigh in on mining in Cesar… you need to know what was there before it. Spoiler: it wasn't what you think. #CesarColombia #MineríaColombia",engagement:4892,vistas:53118,red:'TikTok',tema:'Operations'},
+  {autor:'Rutas del Conflicto',fecha:'2026-02-20',texto:"A land restitution court ruled that the multinational Drummond did not act in good faith when it bought several farms that had belonged to peasant victims of paramilitarism in Cesar.",engagement:4818,vistas:0,red:'Instagram',tema:'CSR & Community'},
+  {autor:'El Espectador',fecha:'2024-06-09',texto:"A couple of years after Prodeco's mine closed, the towns of La Jagua, La Loma and Becerril are looking for ways to rethink how they live. The land left behind by extraction makes the task harder.",engagement:4537,vistas:160133,red:'Instagram',tema:'Operations'},
+  {autor:'JS',fecha:'2026-03-22',texto:"Train between La Dorada and Chiriguaná. The right wing killed the train in Colombia. Today @petrogustavo is bringing it back.",engagement:3884,vistas:17376,red:'X',tema:'Other'},
+  {autor:'Revista RAYA',fecha:'2026-05-24',texto:"Drummond hires a former Constitutional Court justice to overturn a ruling on the restitution of seized land. Carlos Bernal Pulido is Drummond's new lawyer in a dispute over a thousand hectares in Cesar.",engagement:3655,vistas:0,red:'Instagram',tema:'Conflict & Territory'},
+  {autor:'EL PILÓN - ES LO NUESTRO',fecha:'2024-10-08',texto:"The Perijá Cocoa Growers Association took part in exporting more than ten tons of high-quality cocoa to Belgium through the alliance with Drummond and Socodevi in the Agroemprende Cacao program.",engagement:2977,vistas:0,red:'Instagram',tema:'CSR & Community'},
+  {autor:'Juan Camilo',fecha:'2026-03-24',texto:"Land seized by paramilitaries in Cesar ended up in Drummond's hands. A ruling confirmed that the multinational bought 1,000 hectares in Agustín Codazzi from displaced peasants.",engagement:2883,vistas:14609,red:'X',tema:'Conflict & Territory'},
+  {autor:'EL PILÓN - ES LO NUESTRO',fecha:'2024-06-14',texto:"Drummond Ltd. donated two aircraft to SENA for the Aviation Technician Training School in Barranquilla.",engagement:2870,vistas:0,red:'Instagram',tema:'CSR & Community'},
+  {autor:'MISS POIROT',fecha:'2026-03-25',texto:"It wasn't progress. It was dispossession. While peasants were being driven out by paramilitaries in Cesar, the multinational Drummond was buying those same lands. Nearly 1,000 hectares marked by terror.",engagement:2503,vistas:8873,red:'X',tema:'CSR & Community'},
+  {autor:'EL PILÓN - ES LO NUESTRO',fecha:'2023-06-26',texto:"Drummond Ltda. ranks as the fifth-largest company in Colombia in the Superintendency of Companies' report on the country's 1,000 largest companies.",engagement:2472,vistas:0,red:'Instagram',tema:'Other'},
+  {autor:'Claudia Margarita Zuleta M.',fecha:'2019-11-21',texto:"I was very pleased to attend the Good Governance seminar organized by @drummondltdco. Thank you, Drummond, for creating spaces for dialogue and the exchange of ideas.",engagement:2429,vistas:0,red:'Instagram',tema:'Reputation'},
+  {autor:'EL PILÓN - ES LO NUESTRO',fecha:'2025-09-23',texto:"A total of 240 families from La Jagua de Ibirico and Chiriguaná, Cesar, received new homes as part of a social investment project carried out by Drummond Ltd.",engagement:2117,vistas:0,red:'Instagram',tema:'CSR & Community'},
+  {autor:'Revista RAYA',fecha:'2026-03-28',texto:"The multinational Drummond, whose main mine is in Agustín Codazzi (Cesar), bought more than a thousand hectares seized by Jorge 40's paramilitaries, who displaced the peasants.",engagement:1487,vistas:7767,red:'TikTok',tema:'Conflict & Territory'},
+  {autor:'Revista RAYA',fecha:'2026-03-28',texto:"Drummond: the coal multinational that bought land seized by a paramilitary front it allegedly financed. Its main mine is in Agustín Codazzi (Cesar).",engagement:1486,vistas:12217,red:'Instagram',tema:'Conflict & Territory'},
+  {autor:'EL PILÓN - ES LO NUESTRO',fecha:'2024-03-05',texto:"The municipality of La Jagua de Ibirico is going through one of its worst financial crises since coal mining began. It owes COP 7,896 million across various obligations.",engagement:1336,vistas:0,red:'Instagram',tema:'Environment'},
+  {autor:'Drummond Ltd. Colombia',fecha:'2022-04-06',texto:"These are some of the landscapes visitors to our mining and port operations can see. #ImpactoPositivo #MineríaBienHecha #PuertoDrummond #Magdalena #Cesar",engagement:959,vistas:18024,red:'Instagram',tema:'Reputation'},
+  {autor:'EL PILÓN - ES LO NUESTRO',fecha:'2024-11-07',texto:"Awards ceremony for the third edition of the short-story contest \"Leer es nuestro cuento\" (Reading Is Our Story), organized by EL PILÓN and sponsored by Drummond Ltd. in Valledupar.",engagement:503,vistas:0,red:'Instagram',tema:'Reputation'},
+  {autor:'Alcaldía de La Jagua de Ibirico',fecha:'2025-01-24',texto:"Mayor Leonardo Hernández attended the presentation of scholarships awarded by Drummond to young people from our region. Three recipients are from La Jagua de Ibirico.",engagement:483,vistas:0,red:'Instagram',tema:'Education'},
+  {autor:'Didier Lobo',fecha:'2025-12-11',texto:"Royalties really can transform lives. In La Jagua de Ibirico we saw it in action: university scholarships, support for small businesses and homes for families. I stand for responsible mining.",engagement:436,vistas:7456,red:'Instagram',tema:'Environment'},
+  {autor:'Radio Maravilla Stereo 105.7',fecha:'2026-01-19',texto:"Mining company Drummond won a court battle in the U.S. The total award is 256 million dollars. A court ruled in its favor: the accusations were false and defamatory.",engagement:436,vistas:0,red:'Instagram',tema:'Reputation'},
+  {autor:'Leo Alcalde',fecha:'2023-08-27',texto:"The first woman to mine coal in La Jagua de Ibirico: Mrs. Julia Piti. Always a friend of my family.",engagement:429,vistas:0,red:'Instagram',tema:'Environment'},
+  {autor:'Ministerio de Ambiente',fecha:'2026-06-03',texto:"Gustavo Petro's government issues Resolution 0663 of June 2, 2026, permanently protecting the Heart of the World in the Sierra Nevada de Santa Marta and closing the door to new mining activity.",engagement:390,vistas:0,red:'Facebook',tema:'Environment'},
+  {autor:'RTA Noticias | Valledupar',fecha:'2022-05-12',texto:"The multinational Drummond joins the Valledupar 2022 Bolivarian Games with a contribution of 500 million pesos.",engagement:261,vistas:0,red:'Instagram',tema:'Reputation'},
+  {autor:'Drummond Ltd. Colombia',fecha:'2019-02-02',texto:"Drummond rewards academic excellence. Signing of the #BecasDrummond 2019 award agreement in Valledupar. Official welcome to the new recipients from the mining area of influence.",engagement:198,vistas:0,red:'Instagram',tema:'Education'},
+  {autor:'Radio Guatapuri',fecha:'2025-11-17',texto:"Journalist Liliana Vanegas Romero is the winner of the ninth Drummond Ltd. Communications Scholarship.",engagement:156,vistas:0,red:'Instagram',tema:'Education'},
+  {autor:'CUC - Universidad de la Costa',fecha:'2017-05-10',texto:"Environmental Engineering students make an industrial visit to Drummond's Pribbenow Mine in La Loma, Cesar.",engagement:130,vistas:0,red:'Instagram',tema:'Education'},
+  {autor:'PORTAL LA VERDAD',fecha:'2025-07-09',texto:"Deadline of July 31, 2025 to apply for the Drummond Ltd. Communications Scholarship at the Valledupar offices.",engagement:121,vistas:0,red:'Instagram',tema:'Education'},
+  {autor:'EL PILÓN - ES LO NUESTRO',fecha:'2025-09-23',texto:"Drummond Ltd. announces new investment in port infrastructure for Puerto Drummond in Santa Marta, expanding coal export capacity from Colombia's Caribbean coast.",engagement:890,vistas:15200,red:'Instagram',tema:'Operations'},
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let currentView='menciones', currentPeriod='all', activeTema=null;
+let evolutionChart=null, stackedChart=null;
+
+function fmtNum(n) {
+  if (!n||isNaN(n)) return '0';
+  if (n>=1e6) return (n/1e6).toFixed(1)+'M';
+  if (n>=1e3) return Math.round(n/1e3)+'K';
+  return n.toLocaleString('en-US');
+}
+function getFilteredYears() {
+  let y=BY_YEAR;
+  if (currentPeriod==='2020') y=y.filter(r=>r.Year>=2020);
+  if (currentPeriod==='2023') y=y.filter(r=>r.Year>=2023);
+  return y;
+}
+function getKey() {
+  return currentView==='menciones'?'Menciones':currentView==='engagement'?'Engagement':'Vistas';
+}
+
+// ── TEMA BUTTONS ──────────────────────────────────────────────────────────
+function buildTemaButtons() {
+  const container=document.getElementById('temaButtons');
+  const label=container.querySelector('.filter-label');
+  container.innerHTML='';
+  container.appendChild(label);
+  const all=document.createElement('button');
+  all.className='fbtn'+(activeTema===null?' active':'');
+  all.textContent='All';
+  all.onclick=()=>toggleTema(null);
+  container.appendChild(all);
+  TEMAS.forEach(tema=>{
+    const btn=document.createElement('button');
+    btn.className='fbtn'+(activeTema===tema?' active':'');
+    btn.innerHTML=`<span class="tdot-sm" style="background:${COLORS[tema]}"></span>${tema}`;
+    btn.onclick=()=>toggleTema(tema);
+    container.appendChild(btn);
+  });
+}
+
+// ── KPIs ──────────────────────────────────────────────────────────────────
+function buildKPIs() {
+  const years=getFilteredYears();
+  const totalMen=years.reduce((s,y)=>s+y.Menciones,0);
+  const totalEng=years.reduce((s,y)=>s+y.Engagement,0);
+  const totalVis=years.reduce((s,y)=>s+y.Vistas,0);
+  const sorted=[...years].sort((a,b)=>a.Year-b.Year);
+  let yoy='—',sub='';
+  if (sorted.length>=2) {
+    const prev=sorted[sorted.length-2].Menciones,curr=sorted[sorted.length-1].Menciones;
+    const pct=prev>0?Math.round((curr-prev)/prev*100):0;
+    yoy=(pct>=0?'+':'')+pct+'%';
+    sub=`mentions ${sorted[sorted.length-2].Year} → ${sorted[sorted.length-1].Year}`;
+  }
+  document.getElementById('kpi1').textContent=fmtNum(totalMen);
+  document.getElementById('kpi2').textContent=fmtNum(totalEng);
+  document.getElementById('kpi3').textContent=fmtNum(totalVis);
+  document.getElementById('kpi4').textContent=yoy;
+  document.getElementById('kpi4sub').textContent=sub;
+  setTimeout(()=>{['acc1','acc2','acc3','acc4'].forEach((id,i)=>{document.getElementById(id).style.width=['55%','75%','90%','40%'][i];});},80);
+}
+
+// ── EVOLUTION ─────────────────────────────────────────────────────────────
+function buildEvolution() {
+  const ctx=document.getElementById('evolutionChart').getContext('2d');
+  const years=getFilteredYears();
+  const key=getKey();
+  let data=years.map(y=>{
+    if (activeTema) {
+      const row=THEMES_BY_YEAR.find(r=>r.Year===y.Year&&r.Tema===activeTema);
+      if (!row) return 0;
+      if (key==='Menciones') return row.count;
+      const tot=THEMES_BY_YEAR.filter(r=>r.Year===y.Year).reduce((s,r)=>s+r.count,0);
+      return tot>0?Math.round(y[key]*row.count/tot):0;
+    }
+    return y[key];
+  });
+  if (evolutionChart) evolutionChart.destroy();
+  const grad=ctx.createLinearGradient(0,0,0,210);
+  grad.addColorStop(0,'rgba(217,43,43,0.18)');
+  grad.addColorStop(1,'rgba(217,43,43,0.01)');
+  evolutionChart=new Chart(ctx,{type:'line',data:{labels:years.map(y=>y.Year),datasets:[{data,borderColor:'#d92b2b',borderWidth:2,backgroundColor:grad,fill:true,tension:0.4,pointBackgroundColor:'#d92b2b',pointBorderColor:'#141414',pointBorderWidth:2,pointRadius:4,pointHoverRadius:6}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1a',borderColor:'#d92b2b',borderWidth:1,titleFont:{family:'Inter',size:11,weight:'600'},bodyFont:{family:'Inter',size:12},titleColor:'#d92b2b',bodyColor:'#ebebeb',padding:10,callbacks:{title:i=>`Year ${i[0].label}`,label:i=>` ${KEY_LABEL[key]}: ${fmtNum(i.raw)}`}}},scales:{x:{grid:{color:'rgba(39,39,39,0.9)'},ticks:{color:'#777',font:{family:'Inter',size:11}}},y:{grid:{color:'rgba(39,39,39,0.9)'},ticks:{color:'#777',font:{family:'Inter',size:11},callback:v=>fmtNum(v)},beginAtZero:true}}}});
+}
+
+// ── STACKED ───────────────────────────────────────────────────────────────
+function buildStacked() {
+  const ctx=document.getElementById('stackedChart').getContext('2d');
+  const years=getFilteredYears().filter(y=>y.Year>=2020);
+  const labels=years.map(y=>y.Year);
+  const datasets=TEMAS.map(tema=>{return {label:tema,data:labels.map(yr=>{const r=THEMES_BY_YEAR.find(x=>x.Year===yr&&x.Tema===tema);return r?r.count:0;}),backgroundColor:COLORS[tema]+'bb',borderWidth:0,hidden:!!(activeTema&&activeTema!==tema)};;});
+  if (stackedChart) stackedChart.destroy();
+  stackedChart=new Chart(ctx,{type:'bar',data:{labels,datasets},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1a',borderColor:'#d92b2b',borderWidth:1,titleFont:{family:'Inter',size:11,weight:'600'},bodyFont:{family:'Inter',size:11},titleColor:'#d92b2b',bodyColor:'#ebebeb',padding:10}},scales:{x:{stacked:true,grid:{color:'rgba(39,39,39,0.9)'},ticks:{color:'#777',font:{family:'Inter',size:11}}},y:{stacked:true,grid:{color:'rgba(39,39,39,0.9)'},ticks:{color:'#777',font:{family:'Inter',size:11}},beginAtZero:true}}}});
+}
+
+// ── THEMES ────────────────────────────────────────────────────────────────
+function buildThemes() {
+  const key=getKey();
+  const sorted=[...THEME_DIST].sort((a,b)=>b[key]-a[key]);
+  const max=sorted[0][key];
+  const el=document.getElementById('themeList');
+  el.innerHTML='';
+  sorted.forEach(t=>{
+    const pct=Math.round(t[key]/max*100);
+    const isActive=activeTema===t.Tema;
+    const div=document.createElement('div');
+    div.className='theme-item';
+    div.style.opacity=activeTema&&!isActive?'0.25':'1';
+    div.innerHTML=`<div class="theme-row"><span class="theme-name"><span class="tdot" style="background:${COLORS[t.Tema]}"></span>${t.Tema}</span><span class="theme-num">${fmtNum(t[key])}</span></div><div class="tbar-track"><div class="tbar-fill" style="width:${pct}%;background:${COLORS[t.Tema]}"></div></div>`;
+    div.addEventListener('click',()=>toggleTema(t.Tema));
+    el.appendChild(div);
+  });
+}
+
+// ── SOCIAL ────────────────────────────────────────────────────────────────
+function buildSocial() {
+  const key=getKey();
+  const grid=document.getElementById('socialGrid');
+  grid.innerHTML=SOCIAL.map(s=>{
+    const meta=SOCIAL_ICONS[s.Red]||{icon:'●',bg:'rgba(255,255,255,0.05)',color:'#aaa'};
+    return `
+      <div class="social-card">
+        <div class="social-icon-wrap" style="background:${meta.bg}">
+          <span style="color:${meta.color};font-size:20px">${meta.icon}</span>
+        </div>
+        <div>
+          <div class="social-num">${fmtNum(s[key])}</div>
+          <div class="social-label">${s.Red}</div>
+        </div>
+        <div class="social-stats">
+          <div class="social-stat"><strong>${fmtNum(s.Menciones)}</strong>posts</div>
+          <div class="social-stat"><strong>${fmtNum(s.Engagement)}</strong>eng.</div>
+          ${s.Vistas>0?`<div class="social-stat"><strong>${fmtNum(s.Vistas)}</strong>views</div>`:''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── FEED ──────────────────────────────────────────────────────────────────
+function renderFeed() {
+  const query=(document.getElementById('feedSearch').value||'').toLowerCase();
+  const sort=document.getElementById('feedSort').value;
+  let posts=[...ALL_POSTS];
+  if (activeTema) posts=posts.filter(p=>p.tema===activeTema);
+  if (query) posts=posts.filter(p=>p.autor.toLowerCase().includes(query)||p.texto.toLowerCase().includes(query)||p.red.toLowerCase().includes(query)||p.tema.toLowerCase().includes(query));
+  if (sort==='engagement') posts.sort((a,b)=>b.engagement-a.engagement);
+  else if (sort==='vistas') posts.sort((a,b)=>b.vistas-a.vistas);
+  else if (sort==='reciente') posts.sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  else posts.sort((a,b)=>a.fecha.localeCompare(b.fecha));
+  document.getElementById('feedCount').textContent=`${posts.length} result${posts.length!==1?'s':''}`;
+  const grid=document.getElementById('feedGrid');
+  if (!posts.length) { grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:32px 0;color:var(--gray);font-size:12px">No mentions match this filter.</div>`; return; }
+  grid.innerHTML=posts.map(p=>`
+    <div class="feed-item" style="border-left-color:${COLORS[p.tema]}">
+      <div class="feed-meta">
+        <span class="feed-author">${p.autor}</span>
+        <span class="feed-date">${p.fecha}</span>
+        <span class="feed-tag" style="background:${COLORS[p.tema]}22;color:${COLORS[p.tema]}">${p.tema}</span>
+        <span class="feed-tag" style="background:var(--dark);color:var(--gray-mid);border:1px solid var(--border)">${p.red}</span>
+      </div>
+      <div class="feed-text">${p.texto}</div>
+      <div class="feed-stats">
+        <span class="feed-stat">♥ ${fmtNum(p.engagement)}</span>
+        ${p.vistas>0?`<span class="feed-stat">👁 ${fmtNum(p.vistas)}</span>`:''}
+      </div>
+    </div>`).join('');
+}
+
+// ── CONTROLS ──────────────────────────────────────────────────────────────
+function toggleTema(tema) {
+  activeTema=(activeTema===tema)?null:tema;
+  buildTemaButtons();
+  buildAll();
+}
+function setView(v,btn) {
+  currentView=v;
+  document.querySelectorAll('[data-view]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildAll();
+}
+function setPeriod(p,btn) {
+  currentPeriod=p;
+  document.querySelectorAll('[data-period]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildAll();
+}
+function buildAll() {
+  buildKPIs(); buildEvolution(); buildStacked(); buildThemes(); buildSocial(); renderFeed();
+}
+
+document.addEventListener('DOMContentLoaded',()=>{ buildTemaButtons(); buildAll(); });
+</script>
+
+
+</body></html>

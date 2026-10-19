@@ -1,13 +1,13 @@
 # Monthly Audience & Culture Intelligence — report template
 
-Static page (no build step). The design lives in `index.html`; every month's content lives in `data/edition.json`.
+Static page (no build step). The design lives in `index.html`; every month's content lives in `edition.json`.
 
 ## Structure
 
 ```
 index.html            page, styles and rendering logic (do not edit monthly)
-data/edition.json     the edition: findings, sheets, evidence, overview texts
-assets/fatcat9-logo.png
+edition.json     the edition: findings, sheets, evidence, overview texts
+fatcat9-logo.png
 ```
 
 ## Publish on GitHub Pages
@@ -19,12 +19,12 @@ assets/fatcat9-logo.png
 
 ## Monthly update
 
-1. Copy `data/edition.json`, replace the content with the new edition.
+1. Copy `edition.json`, replace the content with the new edition.
 2. Set `"synthetic": false` in `edition` to hide the sample banner.
 3. Commit. Pages refreshes in a minute or two.
 
 Tip: keep past editions as `data/2026-10.json`, `data/2026-11.json`, etc., and point
-`index.html` (the `fetch('data/edition.json')` line) at the current one, or copy the
+`index.html` (the `fetch('edition.json')` line) at the current one, or copy the
 current edition to `edition.json` each month.
 
 ## Priority score

@@ -1,3 +1,5 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Audience &amp; Culture Intelligence</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -400,8 +402,8 @@ footer .wrap { padding-block: 24px 40px; display: flex; justify-content: space-b
         ${opt('lib-brand', 'Brand', uniq('brand'), s.brand)}${opt('lib-platform', 'Platform', PORDER.filter(p => uniq('platform').includes(p)), s.platform)}
         ${opt('lib-finding', 'Finding', D.findings.map(f => f.id).sort(), s.finding, v => v + ' · ' + D.findings.find(f => f.id === v).title)}${opt('lib-stage', 'Stage', ['Dreaming', 'Planning', 'Comparing', 'Deciding', 'Post-stay'].filter(x => uniq('stage').includes(x)), s.stage)}</div>
         <div class="libcount"><span id="lib-n"></span><button class="linkbtn" id="lib-reset">Clear filters</button></div><div class="libgrid" id="lib-grid"></div></div>`;
-      $('#lib-q').addEventListener('input', ev => { s.q = ev.target.value; drawLib(); });
-      ['brand', 'platform', 'finding', 'stage'].forEach(k => $('#lib-' + k).addEventListener('change', ev => { s[k] = ev.target.value; drawLib(); }));
+      $('#lib-q').addEventListener('input', ev => { state.lib.q = ev.target.value; drawLib(); });
+      ['brand', 'platform', 'finding', 'stage'].forEach(k => $('#lib-' + k).addEventListener('change', ev => { state.lib[k] = ev.target.value; drawLib(); }));
       $('#lib-reset').addEventListener('click', () => { state.lib = { q: '', brand: '', platform: '', finding: '', stage: '' }; syncLib(); drawLib(); });
     }
     syncLib(); drawLib();

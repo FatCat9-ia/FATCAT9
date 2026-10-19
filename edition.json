@@ -1,0 +1,313 @@
+{
+  "edition": {
+    "client": "Sandals Resorts & Beaches Resorts",
+    "product": "Monthly Audience & Culture Intelligence",
+    "number": "00",
+    "label": "Sample Edition",
+    "month": "October 2026",
+    "period": "Sep 15 – Oct 14, 2026",
+    "published": "Oct 19, 2026",
+    "synthetic": true,
+    "disclaimer": "Sample edition for illustration. All names, posts, figures and placements are synthetic and do not represent real research or real Sandals or Beaches travelers."
+  },
+  "scoring": {
+    "weights": { "volume": 0.30, "intensity": 0.25, "momentum": 0.25, "relevance": 0.20 },
+    "labels": {
+      "volume": "Volume",
+      "intensity": "Emotional intensity",
+      "momentum": "Momentum",
+      "relevance": "Brand relevance"
+    },
+    "descriptions": {
+      "volume": "How much of the relevant conversation the theme represents.",
+      "intensity": "How strongly people feel when they raise it.",
+      "momentum": "How fast it is growing versus the previous 30 days.",
+      "relevance": "How directly it connects with what the brand offers or promises."
+    },
+    "strength": { "Strong": 70, "Emerging": 50, "Watch": 0 }
+  },
+  "overview": {
+    "threeLines": [
+      "Couples are tired of a single picture of romance. They want trips that look like them.",
+      "Family holidays are judged by the kids’ joy, and parents are starting to say what they lost along the way.",
+      "“What’s actually included?” is still the biggest category barrier, and it is about confidence more than price."
+    ],
+    "kpis": [
+      { "label": "Public conversations analyzed", "value": "18,420" },
+      { "label": "Guest reviews analyzed", "value": "2,310" },
+      { "label": "Prioritized findings", "value": "6" },
+      { "label": "New emerging signals", "value": "2" }
+    ],
+    "mix": {
+      "brand": [
+        { "name": "Sandals-related", "pct": 41 },
+        { "name": "Beaches-related", "pct": 27 },
+        { "name": "Category only", "pct": 32 }
+      ],
+      "platform": [
+        { "name": "Instagram", "pct": 34 },
+        { "name": "Facebook", "pct": 29 },
+        { "name": "TikTok", "pct": 24 },
+        { "name": "X", "pct": 13 }
+      ]
+    },
+    "brandSplit": {
+      "Sandals": [
+        { "tag": "Leading", "text": "Couples want a version of romance that reflects their own relationship." },
+        { "tag": "Rising", "text": "Milestones beyond the honeymoon: renewals, recoveries, years survived together." },
+        { "tag": "Watch", "text": "Surprises arranged by staff can feel intrusive when couples want privacy." }
+      ],
+      "Beaches": [
+        { "tag": "Leading", "text": "Parents describe successful holidays that left little room for each other." },
+        { "tag": "Rising", "text": "The family planner wants to stop organizing and become a guest." },
+        { "tag": "Watch", "text": "Kids’ club details are discovered late, after adult plans are already set." }
+      ]
+    },
+    "platformNotes": [
+      { "platform": "Instagram", "note": "Where couples build the picture. Pushback on “template romance” concentrates here (46% of mentions for finding 01)." },
+      { "platform": "Facebook", "note": "Where families plan and ask. Groups carry the most detailed questions about inclusions and logistics." },
+      { "platform": "TikTok", "note": "Where proof lives. Unfiltered guest videos are becoming the evidence people trust most before deciding." },
+      { "platform": "X", "note": "Where frustration goes public, mostly around price confidence and “hidden extras.”" }
+    ],
+    "culturalWatch": [
+      { "title": "Milestones, redefined", "signal": "Emerging", "text": "Couples celebrate milestones that never had a ritual: a year sober, debts paid off, a hard year survived. They want celebration without the clichés." },
+      { "title": "The unfiltered review", "signal": "Watch", "text": "Raw, unedited guest footage is gaining trust over polished imagery. “Show me the breakfast line” is becoming a test of honesty." }
+    ],
+    "nextSession": [
+      "Which romantic signals in current Sandals creative might read as “someone else’s honeymoon”?",
+      "How could Beaches show adult time without diminishing the family promise?",
+      "What proof would make the “all” in all-inclusive feel believable at a glance?"
+    ]
+  },
+  "findings": [
+    {
+      "id": "F01",
+      "title": "Romance that feels like ours",
+      "brand": "Sandals",
+      "type": "Tension",
+      "tension": "Romance as pictured vs. romance as ours",
+      "stage": "Dreaming · Planning",
+      "profile": "Engaged and long-term couples",
+      "mentions": 1240,
+      "change": 18,
+      "share": 17,
+      "shareOf": "Sandals-related conversation",
+      "platforms": { "Instagram": 46, "TikTok": 27, "Facebook": 15, "X": 4, "Reviews": 8 },
+      "components": { "volume": 78, "intensity": 88, "momentum": 80, "relevance": 84 },
+      "emotions": ["Cliché fatigue", "Desire for authenticity"],
+      "summary": "Couples push back on a single, prescribed image of romance and look for experiences that reflect how they actually are together.",
+      "reveals": "Romance is personal. Generic romantic signals such as petals, champagne and identical overwater imagery are read as “someone else’s honeymoon.”",
+      "evidence": ["E01", "E02", "E03", "E04", "E05"],
+      "sheet": "OS01"
+    },
+    {
+      "id": "F02",
+      "title": "The family holiday that leaves the adults out",
+      "brand": "Beaches",
+      "type": "Unmet need",
+      "tension": "The kids’ joy vs. the couple’s connection",
+      "stage": "Post-stay · Planning",
+      "profile": "Parents of children under 12",
+      "mentions": 1105,
+      "change": 12,
+      "share": 22,
+      "shareOf": "Beaches-related conversation",
+      "platforms": { "Facebook": 38, "TikTok": 30, "Instagram": 20, "X": 3, "Reviews": 9 },
+      "components": { "volume": 72, "intensity": 85, "momentum": 76, "relevance": 82 },
+      "emotions": ["Exhaustion", "Affectionate humor", "Quiet regret"],
+      "summary": "Parents describe holidays that worked beautifully for the kids but left them with almost no time or conversation as a couple.",
+      "reveals": "A family holiday is judged by the kids’ happiness, while the adults’ need to rest and reconnect goes unspoken until afterwards.",
+      "evidence": ["E06", "E07", "E08", "E09", "E10"],
+      "sheet": "OS02"
+    },
+    {
+      "id": "F03",
+      "title": "What does “all” actually include?",
+      "brand": "Category",
+      "type": "Barrier",
+      "tension": "Simplicity promised vs. complexity experienced",
+      "stage": "Comparing",
+      "profile": "All traveler profiles",
+      "mentions": 2380,
+      "change": 4,
+      "share": 40,
+      "shareOf": "category-only conversation",
+      "platforms": { "Facebook": 31, "X": 24, "TikTok": 22, "Instagram": 13, "Reviews": 10 },
+      "components": { "volume": 90, "intensity": 70, "momentum": 58, "relevance": 74 },
+      "emotions": ["Distrust", "Confusion"],
+      "summary": "Travelers struggle to compare all-inclusive offers because they cannot tell what is covered and what will cost extra.",
+      "reveals": "The barrier is confidence in the promise, not the headline price. Guests who stayed often say the value was clearer afterwards than before.",
+      "evidence": ["E11", "E12", "E13", "E14", "E15", "E16"],
+      "sheet": null
+    },
+    {
+      "id": "F04",
+      "title": "The planner wants a holiday too",
+      "brand": "Beaches",
+      "type": "Need",
+      "tension": "Everyone’s holiday vs. my holiday",
+      "stage": "Planning",
+      "profile": "Primary family planners",
+      "mentions": 640,
+      "change": 27,
+      "share": 13,
+      "shareOf": "Beaches-related conversation",
+      "platforms": { "Facebook": 44, "TikTok": 31, "Instagram": 21, "X": 4, "Reviews": 0 },
+      "components": { "volume": 52, "intensity": 72, "momentum": 66, "relevance": 56 },
+      "emotions": ["Mental load", "Wishfulness"],
+      "summary": "The person who organizes the family trip says, often with humor, that they want to stop making decisions and simply be a guest.",
+      "reveals": "For the planner, luxury is the absence of decisions. Relief from organizing may matter as much as the activities themselves.",
+      "evidence": ["E17", "E18", "E19", "E20"],
+      "sheet": null
+    },
+    {
+      "id": "F05",
+      "title": "Milestones beyond the honeymoon",
+      "brand": "Sandals",
+      "type": "Driver",
+      "tension": "Celebration vs. convention",
+      "stage": "Dreaming",
+      "profile": "Couples 10+ years together",
+      "mentions": 410,
+      "change": 35,
+      "share": 6,
+      "shareOf": "Sandals-related conversation",
+      "platforms": { "Instagram": 39, "Facebook": 33, "TikTok": 18, "X": 10, "Reviews": 0 },
+      "components": { "volume": 44, "intensity": 62, "momentum": 70, "relevance": 54 },
+      "emotions": ["Pride", "Tenderness"],
+      "summary": "Couples plan trips to mark milestones that rarely get a ritual: a delayed honeymoon, a vow renewal after a hard year, sobriety, debts paid off.",
+      "reveals": "The occasion is the relationship itself. These couples want celebration that feels earned and personal, not staged.",
+      "evidence": ["E21", "E22", "E23", "E24"],
+      "sheet": null
+    },
+    {
+      "id": "F06",
+      "title": "Proof over polish",
+      "brand": "Category",
+      "type": "Barrier",
+      "tension": "Aspirational imagery vs. believable reality",
+      "stage": "Comparing · Deciding",
+      "profile": "All traveler profiles",
+      "mentions": 520,
+      "change": 41,
+      "share": 9,
+      "shareOf": "category-only conversation",
+      "platforms": { "TikTok": 52, "Instagram": 23, "X": 15, "Facebook": 10, "Reviews": 0 },
+      "components": { "volume": 38, "intensity": 40, "momentum": 62, "relevance": 36 },
+      "emotions": ["Skepticism", "Curiosity"],
+      "summary": "Travelers say they trust unedited guest footage more than polished brand imagery when deciding.",
+      "reveals": "Believability is becoming part of the aesthetic. Real, imperfect moments may carry more persuasive weight than perfect ones.",
+      "evidence": ["E25", "E26", "E27", "E28", "E29", "E30"],
+      "sheet": null
+    }
+  ],
+  "sheets": [
+    {
+      "id": "OS01",
+      "finding": "F01",
+      "headline": "Romance on their terms",
+      "evidence": [
+        "1,240 mentions this period, up 18% versus the previous 30 days.",
+        "17% of Sandals-related conversation; 46% of it on Instagram.",
+        "Highest emotional intensity of any finding this month (88/100)."
+      ],
+      "meaning": "Couples are not rejecting romance. They are rejecting a single template of it. When imagery looks interchangeable, they read it as made for someone else.",
+      "relevance": {
+        "who": "Engaged couples and long-term couples, especially those who describe themselves against clichés.",
+        "when": "Dreaming and early planning, while browsing Instagram and TikTok.",
+        "how": "Sandals’ couples-only focus gives it permission to show many kinds of couples and many kinds of romance."
+      },
+      "opportunity": {
+        "type": "Territory to explore",
+        "statement": "Romance on their terms: experiences that reflect each couple’s own way of being together."
+      },
+      "alsoConsider": [
+        { "type": "Doubt to address", "text": "“Will this feel like a template?”" },
+        { "type": "Belief to strengthen", "text": "Sandals understands couples, not just honeymoons." }
+      ],
+      "agencyQuestions": [
+        "Which current visuals could read as generic romance?",
+        "What does an “ours” moment look like in a 15-second video?",
+        "Which real couple behaviors could anchor the story?"
+      ],
+      "unknowns": [
+        "Whether the pattern differs by market or age group.",
+        "How strongly it affects consideration versus engagement."
+      ]
+    },
+    {
+      "id": "OS02",
+      "finding": "F02",
+      "headline": "Parents get each other back",
+      "evidence": [
+        "1,105 mentions this period, up 12% versus the previous 30 days.",
+        "22% of Beaches-related conversation; strongest on Facebook (38%) and TikTok (30%).",
+        "Often expressed with humor, which keeps it from showing up in basic sentiment."
+      ],
+      "meaning": "Parents measure the holiday by their children’s happiness and rarely complain directly. The missing adult connection appears in jokes and in hindsight.",
+      "relevance": {
+        "who": "Parents of children under 12, and the parent who plans the trip.",
+        "when": "During planning, and again after the stay in reviews and posts.",
+        "how": "Beaches’ family promise can include adult connection without competing with it."
+      },
+      "opportunity": {
+        "type": "Territory to explore",
+        "statement": "The family holiday where parents get each other back."
+      },
+      "alsoConsider": [
+        { "type": "Doubt to address", "text": "“Will we actually get any time to ourselves?”" },
+        { "type": "Belief to strengthen", "text": "Beaches is designed for the whole family, adults included." }
+      ],
+      "agencyQuestions": [
+        "How can adult time appear without implying kids are a burden?",
+        "Which moments signal that parents can truly relax?",
+        "Should kids’ club information appear earlier in the journey?"
+      ],
+      "unknowns": [
+        "Differences between single-parent and two-parent households.",
+        "Whether multigenerational groups share the same need."
+      ]
+    }
+  ],
+  "evidence": [
+    { "id": "E01", "finding": "F01", "brand": "Sandals", "platform": "Instagram", "author": "@mar.and.theo", "date": "Sep 21", "stage": "Dreaming", "profile": "Engaged couple", "need": "Their own romance", "text": "every honeymoon reel is the same overwater bungalow + rose petals 🙃 we’re more “hike at 6am then tacos” people. where’s that resort" },
+    { "id": "E02", "finding": "F01", "brand": "Sandals", "platform": "TikTok", "author": "@jess.travels.slow", "date": "Oct 2", "stage": "Dreaming", "profile": "Engaged couple", "need": "Their own romance", "text": "not me scrolling 400 honeymoon mood boards and realizing none of them look like US" },
+    { "id": "E03", "finding": "F01", "brand": "Sandals", "platform": "Facebook", "author": "Kendra L.", "date": "Sep 28", "stage": "Planning", "profile": "Long-term couple", "need": "Privacy", "text": "Planning our 10th anniversary. We don’t need champagne towers, we need a quiet dinner where nobody announces it’s our anniversary lol" },
+    { "id": "E04", "finding": "F01", "brand": "Sandals", "platform": "Instagram", "author": "@two.passports", "date": "Oct 9", "stage": "Post-stay", "profile": "Long-term couple", "need": "Connection", "text": "best part of the trip wasn’t the “romance package.” it was the random rainy afternoon playing cards on the balcony" },
+    { "id": "E05", "finding": "F01", "brand": "Sandals", "platform": "Reviews", "author": "Google review", "date": "Oct 4", "stage": "Post-stay", "profile": "Long-term couple", "need": "Privacy", "text": "Staff kept trying to set up surprises for us. Very sweet, but some days we just wanted to be left alone." },
+    { "id": "E06", "finding": "F02", "brand": "Beaches", "platform": "TikTok", "author": "@twokids.onesuitcase", "date": "Sep 19", "stage": "Post-stay", "profile": "Parents, kids under 12", "need": "Adult downtime", "text": "kids rating the trip 10/10. me and my husband rating our conversations: 2/10, mostly about sunscreen" },
+    { "id": "E07", "finding": "F02", "brand": "Beaches", "platform": "Facebook", "author": "Dana R.", "date": "Sep 25", "stage": "Post-stay", "profile": "Parents, kids under 12", "need": "Adult downtime", "text": "Came back and realized we hadn’t had one meal without someone needing a refill or a bathroom 😂 worth it but wow" },
+    { "id": "E08", "finding": "F02", "brand": "Beaches", "platform": "Instagram", "author": "@thefamilyedit", "date": "Oct 6", "stage": "Dreaming", "profile": "Parents, kids under 12", "need": "Family connection", "text": "if your family vacation doesn’t include one hour where the adults finish a sentence, is it even a vacation" },
+    { "id": "E09", "finding": "F02", "brand": "Beaches", "platform": "Reviews", "author": "Facebook review", "date": "Oct 1", "stage": "Post-stay", "profile": "Parents, kids under 12", "need": "Adult downtime", "text": "Kids club was amazing. Wish we’d known the details earlier so we could actually plan a date night." },
+    { "id": "E10", "finding": "F02", "brand": "Beaches", "platform": "Facebook", "author": "Marcus T.", "date": "Oct 11", "stage": "Planning", "profile": "Multigenerational group", "need": "Every age", "text": "Multigenerational trip next spring. Grandparents want quiet, teens want wifi, we want a nap. Is there a place that does all three?" },
+    { "id": "E11", "finding": "F03", "brand": "Category", "platform": "X", "author": "@budgetbeachbum", "date": "Sep 17", "stage": "Comparing", "profile": "Couple", "need": "Price confidence", "text": "all-inclusive until you want the good tequila apparently" },
+    { "id": "E12", "finding": "F03", "brand": "Category", "platform": "Facebook", "author": "Priya S.", "date": "Sep 30", "stage": "Comparing", "profile": "Family", "need": "Price confidence", "text": "Can someone explain what’s ACTUALLY included? Excursions? Tips? Room service? I’m comparing three places and it’s impossible" },
+    { "id": "E13", "finding": "F03", "brand": "Category", "platform": "TikTok", "author": "@realtalkvacations", "date": "Oct 3", "stage": "Comparing", "profile": "Couple", "need": "Price confidence", "text": "all-inclusive math: price ÷ what you actually use = ???" },
+    { "id": "E14", "finding": "F03", "brand": "Category", "platform": "X", "author": "@wanderwithkay", "date": "Oct 8", "stage": "Comparing", "profile": "Couple", "need": "Price confidence", "text": "honestly a cruise was easier to price out than half these resorts" },
+    { "id": "E15", "finding": "F03", "brand": "Category", "platform": "Reviews", "author": "Google review", "date": "Sep 23", "stage": "Post-stay", "profile": "Family", "need": "Price confidence", "text": "Upfront the price felt high, but we never touched our wallet all week. Should have trusted it sooner." },
+    { "id": "E16", "finding": "F03", "brand": "Category", "platform": "Instagram", "author": "@ohmyplanner", "date": "Oct 12", "stage": "Comparing", "profile": "Couple", "need": "Price confidence", "text": "saving this 📌 questions to ask before booking an all-inclusive (because “all” means different things everywhere)" },
+    { "id": "E17", "finding": "F04", "brand": "Beaches", "platform": "Facebook", "author": "Laura M.", "date": "Sep 22", "stage": "Planning", "profile": "Primary family planner", "need": "Planning load", "text": "I’m the family travel agent, chef and entertainment director. This year I want to be a guest." },
+    { "id": "E18", "finding": "F04", "brand": "Beaches", "platform": "TikTok", "author": "@momwhoplans", "date": "Oct 5", "stage": "Planning", "profile": "Primary family planner", "need": "Planning load", "text": "POV: you planned the entire trip and still have to find everyone’s shoes every morning" },
+    { "id": "E19", "finding": "F04", "brand": "Beaches", "platform": "Instagram", "author": "@dad.on.duty", "date": "Oct 10", "stage": "Dreaming", "profile": "Primary family planner", "need": "Planning load", "text": "the real luxury is someone else deciding where we eat tonight" },
+    { "id": "E20", "finding": "F04", "brand": "Beaches", "platform": "Facebook", "author": "Tanya W.", "date": "Oct 13", "stage": "Planning", "profile": "Primary family planner", "need": "Planning load", "text": "Looking for a resort where I literally don’t have to make a single reservation. Recs?" },
+    { "id": "E21", "finding": "F05", "brand": "Sandals", "platform": "Instagram", "author": "@25yearsandcounting", "date": "Sep 26", "stage": "Dreaming", "profile": "Couple, 10+ years", "need": "Shared milestones", "text": "we never got a honeymoon. 25 years later we’re finally taking one ❤️" },
+    { "id": "E22", "finding": "F05", "brand": "Sandals", "platform": "Facebook", "author": "Robert & Gail", "date": "Oct 2", "stage": "Planning", "profile": "Couple, 10+ years", "need": "Shared milestones", "text": "Vow renewal after a really hard year. We want it small, warm and just ours." },
+    { "id": "E23", "finding": "F05", "brand": "Sandals", "platform": "TikTok", "author": "@soberandsunny", "date": "Oct 7", "stage": "Dreaming", "profile": "Couple", "need": "Shared milestones", "text": "one year sober trip with my partner. looking for somewhere that feels celebratory without being all about the bar" },
+    { "id": "E24", "finding": "F05", "brand": "Sandals", "platform": "X", "author": "@nina_writes", "date": "Oct 14", "stage": "Dreaming", "profile": "Couple", "need": "Shared milestones", "text": "we’re celebrating paying off our student loans with a trip. adulthood milestones deserve vacations too" },
+    { "id": "E25", "finding": "F06", "brand": "Category", "platform": "TikTok", "author": "@unfiltered.trips", "date": "Sep 18", "stage": "Comparing", "profile": "Couple", "need": "Proof", "text": "showing you the room exactly as we got it. no filter, no wide angle, no tricks" },
+    { "id": "E26", "finding": "F06", "brand": "Category", "platform": "Instagram", "author": "@caribbean.couple", "date": "Sep 29", "stage": "Deciding", "profile": "Couple", "need": "Proof", "text": "brand pics are pretty but tbh I trust the guest videos more" },
+    { "id": "E27", "finding": "F06", "brand": "Category", "platform": "X", "author": "@travelskeptic", "date": "Oct 4", "stage": "Comparing", "profile": "Couple", "need": "Proof", "text": "every resort ad: drone shot, couple laughing at nothing. show me the breakfast line" },
+    { "id": "E28", "finding": "F06", "brand": "Category", "platform": "Facebook", "author": "Sharon K.", "date": "Oct 9", "stage": "Deciding", "profile": "Family", "need": "Proof", "text": "Before booking I watched every guest video I could find. That’s what sold me." },
+    { "id": "E29", "finding": "F06", "brand": "Category", "platform": "Reviews", "author": "Google review", "date": "Oct 11", "stage": "Post-stay", "profile": "Couple", "need": "Proof", "text": "Exactly like the photos, which honestly surprised me." },
+    { "id": "E30", "finding": "F06", "brand": "Beaches", "platform": "TikTok", "author": "@beachdad.diaries", "date": "Oct 13", "stage": "Comparing", "profile": "Parents, kids under 12", "need": "Proof", "text": "the kids’ club tour nobody asked for but every parent needs 👇" }
+  ],
+  "method": {
+    "sources": [
+      "Accessible public conversations on Instagram, Facebook, TikTok and X.",
+      "Google and Facebook guest reviews."
+    ],
+    "dimensions": ["Brand", "Traveler profile", "Occasion", "Need", "Barrier", "Decision stage", "Platform"],
+    "interpretation": "Contextual language analysis with human review of meaning, humor, sarcasm and irony. Classifications can align with segments and variables supplied by the client.",
+    "boundaries": "Conversation is evidence of expressed needs, perceptions, consideration and advocacy. It does not imply verified identities, complete audience coverage, measured ad exposure, causal campaign effects or booking attribution."
+  }
+}

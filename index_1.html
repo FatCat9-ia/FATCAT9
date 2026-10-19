@@ -1,0 +1,429 @@
+<title>Audience &amp; Culture Intelligence</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap">
+<style>
+/* Layout: navy report masthead band → sticky tab bar → one readable column per tab; data lives in data/edition.json */
+:root {
+  --navy: #0B1D2A; --navy-2: #142C3B; --on-navy: #F6F1E8; --on-navy-soft: #B9C9CC;
+  --bg: #F4F5F2; --surface: #FCFCFA; --fg: #0B1D2A; --fg-2: #46565E; --fg-3: #6B7A80;
+  --line: #DCE1DE; --accent: #0E7C74; --accent-bright: #12A79C; --sand: #8A6A35; --sand-bg: #F1E7D3;
+  --good: #1B7F4B; --chip: #E8EEEC;
+  --c1: #2a78d6; --c2: #eb6834; --c3: #1baf7a; --c4: #eda100; --c5: #e87ba4;
+  --f-display: 'Google Sans Flex', 'DM Sans', Arial, sans-serif;
+  --f-body: 'DM Sans', Arial, sans-serif;
+  --f-quote: 'Cormorant Garamond', Georgia, serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0A1823; --surface: #11232F; --fg: #EEF0EC; --fg-2: #B9C9CC; --fg-3: #8FA6AD;
+  --line: #24404E; --accent: #3FC2B6; --accent-bright: #12A79C; --sand: #D8C3A0; --sand-bg: #2A2A22;
+  --good: #5BC28A; --chip: #1A3240;
+  --c1: #3987e5; --c2: #d95926; --c3: #199e70; --c4: #c98500; --c5: #d55181; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0A1823; --surface: #11232F; --fg: #EEF0EC; --fg-2: #B9C9CC; --fg-3: #8FA6AD;
+  --line: #24404E; --accent: #3FC2B6; --accent-bright: #12A79C; --sand: #D8C3A0; --sand-bg: #2A2A22;
+  --good: #5BC28A; --chip: #1A3240;
+  --c1: #3987e5; --c2: #d95926; --c3: #199e70; --c4: #c98500; --c5: #d55181; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 16px; line-height: 1.55 }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--navy) }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em }
+p { margin: 0 }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent) }
+.num { font-variant-numeric: tabular-nums }
+
+/* masthead */
+.mast { background: var(--navy); color: var(--on-navy) }
+.mast .wrap { padding-block: 32px 28px; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end }
+.mast-top { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap }
+.mast-top img { width: 30px; height: 37px; object-fit: contain }
+.mast-top .brand { font-weight: 700; letter-spacing: .14em; font-size: 12px; color: var(--on-navy) }
+.mast-top .sep { color: var(--on-navy-soft) }
+.mast-top .client { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-bright); font-weight: 700 }
+.mast h1 { font-size: clamp(30px, 4.6vw, 48px); font-weight: 600; line-height: 1.05; color: var(--on-navy) }
+.mast .sub { margin-top: 10px; color: var(--on-navy-soft); font-size: 15px }
+.ed-meta { display: grid; gap: 4px; text-align: right; font-size: 13px; color: var(--on-navy-soft) }
+.ed-meta b { color: var(--on-navy); font-family: var(--f-display); font-size: 28px; font-weight: 600; line-height: 1 }
+.synthetic { background: #D8C3A0; color: #0B1D2A; font-size: 13px }
+.synthetic .wrap { padding-block: 8px; display: flex; gap: 10px; align-items: baseline }
+.synthetic b { letter-spacing: .1em; text-transform: uppercase; font-size: 11px; white-space: nowrap }
+
+/* tabs */
+.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line) }
+.tabs .wrap { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none }
+.tabs button { font: 600 14px var(--f-body); color: var(--fg-2); background: none; border: 0; padding: 14px 14px 12px; border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap }
+.tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent-bright) }
+.tabs button:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 2px }
+main .wrap { padding-block: 40px 72px; display: grid; gap: 48px }
+section.panel { display: grid; gap: 48px }
+
+/* overview */
+.lines { display: grid; gap: 0; border-top: 1px solid var(--line) }
+.lines li { list-style: none; display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--line); font-family: var(--f-display); font-size: clamp(18px, 2.2vw, 23px); line-height: 1.35; font-weight: 500 }
+.lines li span { font-family: var(--f-body); font-size: 13px; font-weight: 700; color: var(--accent); padding-top: 6px }
+.lines ol, ol.lines { padding: 0; margin: 0 }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); background: var(--surface); border-radius: 10px }
+.kpi { padding: 18px 20px; border-left: 1px solid var(--line) }
+.kpi:first-child { border-left: 0 }
+.kpi b { display: block; font-family: var(--f-display); font-size: 30px; font-weight: 600; font-variant-numeric: tabular-nums }
+.kpi span { font-size: 13px; color: var(--fg-2) }
+.sec-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 18px }
+.sec-head h2 { font-size: 26px; font-weight: 600 }
+.sec-head p { color: var(--fg-2); font-size: 14px; max-width: 60ch }
+
+/* priority chart */
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px 20px 12px; position: relative }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--fg-2); margin-bottom: 14px }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px }
+.prow { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr) 56px; gap: 14px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); cursor: pointer }
+.prow:first-of-type { border-top: 0 }
+.prow:hover .ptitle { color: var(--accent) }
+.ptitle { font-weight: 600; font-size: 15px; line-height: 1.3 }
+.pmeta { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap }
+.track { position: relative; height: 22px }
+.bar { display: flex; gap: 2px; height: 22px }
+.bar span { height: 100%; display: block }
+.bar span:first-child { border-radius: 4px 0 0 4px }
+.bar span:last-child { border-radius: 0 4px 4px 0 }
+.score { font-family: var(--f-display); font-size: 22px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums }
+.axis { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr) 56px; gap: 14px; font-size: 12px; color: var(--fg-3); padding-top: 6px }
+.axis .ticks { position: relative; height: 16px }
+.axis .ticks span { position: absolute; transform: translateX(-50%) }
+.axis .ticks span:first-child { transform: none }
+.axis .ticks span:last-child { transform: translateX(-100%) }
+.thresh { position: absolute; top: -6px; bottom: -6px; border-left: 1px dashed var(--fg-3); opacity: .55 }
+.tip { position: absolute; pointer-events: none; background: var(--navy); color: var(--on-navy); font-size: 13px; padding: 10px 12px; border-radius: 8px; min-width: 200px; box-shadow: 0 6px 24px rgba(0,0,0,.25); z-index: 4 }
+.tip b { font-family: var(--f-display) }
+.tip div { display: flex; justify-content: space-between; gap: 16px; font-variant-numeric: tabular-nums }
+
+.chip { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--chip); color: var(--fg-2) }
+.chip.Strong { background: var(--accent); color: var(--surface) }
+.chip.Emerging { background: transparent; color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent) }
+.chip.Watch { background: transparent; color: var(--fg-3); box-shadow: inset 0 0 0 1px var(--fg-3) }
+.chip.Sandals { color: var(--accent) }
+.chip.Beaches { color: var(--sand) }
+
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px }
+.brandcol h3 { font-size: 15px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; padding-bottom: 10px; border-bottom: 2px solid var(--accent); color: var(--accent) }
+.brandcol.Beaches h3 { color: var(--sand); border-color: var(--sand) }
+.brandcol ul { list-style: none; padding: 0; margin: 0 }
+.brandcol li { display: grid; grid-template-columns: 78px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px }
+.brandcol li b { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-3); padding-top: 3px }
+
+.mixbar { display: flex; gap: 2px; height: 14px; margin: 10px 0 8px }
+.mixbar span:first-child { border-radius: 4px 0 0 4px } .mixbar span:last-child { border-radius: 0 4px 4px 0 }
+.pnotes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px }
+.pnote { padding: 14px 0; border-top: 1px solid var(--line); display: grid; gap: 4px }
+.pnote h3 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px }
+.pnote h3 i { width: 10px; height: 10px; border-radius: 2px; display: inline-block }
+.pnote p { color: var(--fg-2); font-size: 15px }
+.watch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px }
+.watch article { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: grid; gap: 8px; align-content: start }
+.watch h3 { font-size: 19px; font-weight: 600 }
+.watch p { color: var(--fg-2); font-size: 15px }
+.questions { counter-reset: q; display: grid; gap: 0; padding: 0; margin: 0 }
+.questions li { list-style: none; padding: 14px 0 14px 44px; border-top: 1px solid var(--line); position: relative; font-size: 17px }
+.questions li::before { counter-increment: q; content: "Q" counter(q); position: absolute; left: 0; top: 16px; font-size: 12px; font-weight: 700; color: var(--accent) }
+
+/* findings */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.seg button { font: 600 13px var(--f-body); padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg-2); cursor: pointer }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg) }
+.flist { display: grid; gap: 20px }
+.finding { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px; display: grid; gap: 18px }
+.fhead { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: start }
+.fhead h3 { font-size: 24px; font-weight: 600; line-height: 1.2; margin-top: 8px }
+.fid { font-size: 12px; font-weight: 700; color: var(--fg-3); letter-spacing: .1em }
+.fscore { text-align: right }
+.fscore b { font-family: var(--f-display); font-size: 40px; font-weight: 600; line-height: 1; display: block; font-variant-numeric: tabular-nums }
+.fscore span { font-size: 12px; color: var(--fg-3) }
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-block: 1px solid var(--line) }
+.metrics div { padding: 12px 14px; border-left: 1px solid var(--line) }
+.metrics div:first-child { border-left: 0; padding-left: 0 }
+.metrics b { display: block; font-family: var(--f-display); font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums }
+.metrics span { font-size: 12px; color: var(--fg-3) }
+.up { color: var(--good) }
+.fbody { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px }
+.fbody h4 { margin: 0 0 6px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-3) }
+.fbody p { font-size: 16px; color: var(--fg) }
+.fbody .reveal { font-family: var(--f-quote); font-style: italic; font-size: 23px; line-height: 1.3; color: var(--fg) }
+.quotes { display: grid; gap: 10px }
+.post { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px }
+.post .who { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--fg-3) }
+.post .who b { color: var(--fg); font-size: 13px }
+.post .who i { width: 8px; height: 8px; border-radius: 2px; display: inline-block }
+.post p { font-size: 15px; line-height: 1.45 }
+.fplat { display: grid; gap: 6px; font-size: 12px; color: var(--fg-3) }
+.linkbtn { font: 600 14px var(--f-body); color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start }
+.weights { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--fg-3) }
+.weights span b { color: var(--fg); font-variant-numeric: tabular-nums }
+
+/* opportunity sheets */
+.sheets { display: grid; gap: 32px }
+.sheet { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden }
+.sheet-top { background: var(--navy); color: var(--on-navy); padding: 24px 28px; display: grid; gap: 6px }
+.sheet-top .eyebrow { color: var(--accent-bright) }
+.sheet-top h3 { font-size: 30px; font-weight: 600; color: var(--on-navy) }
+.sheet-top p { color: var(--on-navy-soft); font-size: 14px }
+.sheet-body { padding: 28px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px 36px }
+.sheet-body h4 { margin: 0 0 8px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent) }
+.sheet-body ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 15px }
+.sheet-body p { font-size: 15px }
+.rel { display: grid; gap: 10px }
+.rel div { display: grid; grid-template-columns: 56px 1fr; gap: 10px; font-size: 15px }
+.rel b { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-3); padding-top: 2px }
+.opp { grid-column: 1 / -1; background: var(--sand-bg); border-radius: 10px; padding: 20px 22px; display: grid; gap: 10px }
+.opp .stmt { font-family: var(--f-quote); font-style: italic; font-size: 28px; line-height: 1.25 }
+.opp .also { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 14px; color: var(--fg-2) }
+.opp .also b { color: var(--fg) }
+.opp h4 { color: var(--sand) }
+
+/* library */
+.libbar { display: grid; grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr)); gap: 10px }
+.libbar input, .libbar select { width: 100%; font: 14px var(--f-body); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg) }
+.libcount { font-size: 14px; color: var(--fg-2); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap }
+.libgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px }
+.libgrid .post { background: var(--surface); align-content: start }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px }
+.empty { padding: 32px; text-align: center; color: var(--fg-2); border: 1px dashed var(--line); border-radius: 10px }
+
+/* method */
+.mgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px }
+.mgrid article { display: grid; gap: 8px; align-content: start; padding-top: 14px; border-top: 2px solid var(--line) }
+.mgrid h3 { font-size: 18px; font-weight: 600 }
+.mgrid p, .mgrid li { font-size: 15px; color: var(--fg-2) }
+.mgrid ul { margin: 0; padding-left: 18px }
+.formula { font-family: var(--f-display); font-size: 17px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; line-height: 1.6 }
+footer { border-top: 1px solid var(--line); color: var(--fg-3); font-size: 13px }
+footer .wrap { padding-block: 24px 40px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap }
+
+@media (max-width: 860px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+  .kpi:nth-child(3) { border-left: 0 } .kpi:nth-child(n+3) { border-top: 1px solid var(--line) }
+  .two, .watch, .pnotes, .fbody, .sheet-body, .mgrid { grid-template-columns: minmax(0, 1fr) }
+  .libgrid { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+  .libbar { grid-template-columns: repeat(2, minmax(0, 1fr)) } .libbar input { grid-column: 1 / -1 }
+  .prow, .axis { grid-template-columns: minmax(0, 1fr) 48px } .prow .track { grid-column: 1 / -1; grid-row: 2 } .axis > span:first-child { display: none } .axis .ticks { grid-column: 1 / -1 } .axis > span:last-child { display: none }
+}
+@media (max-width: 560px) {
+  .mast .wrap { grid-template-columns: minmax(0, 1fr) } .ed-meta { text-align: left }
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)) } .metrics div:nth-child(3) { border-left: 0; padding-left: 0 }
+  .libgrid { grid-template-columns: minmax(0, 1fr) }
+  .fhead h3 { font-size: 21px }
+}
+@media (prefers-reduced-motion: no-preference) { .panel { animation: in .25s ease-out } @keyframes in { from { transform: translateY(4px) } to { transform: none } } }
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <div>
+      <div class="mast-top"><img src="fatcat9-logo.png" alt="FATCAT9 logo"><span class="brand">FATCAT9</span><span class="sep">|</span><span class="client" id="client">Sandals Resorts &amp; Beaches Resorts</span></div>
+      <h1 id="product">Monthly Audience &amp; Culture Intelligence</h1>
+      <p class="sub" id="period">Loading edition…</p>
+    </div>
+    <div class="ed-meta"><span id="edlabel">Edition</span><b class="num" id="ednum">—</b><span id="published"></span></div>
+  </div>
+</header>
+<div class="synthetic" id="synth"><div class="wrap"><b>Sample edition</b><span id="disclaimer">Synthetic data for illustration.</span></div></div>
+<nav class="tabs" aria-label="Report sections"><div class="wrap" role="tablist">
+  <button role="tab" id="t-overview" aria-controls="overview" aria-selected="true">Overview</button>
+  <button role="tab" id="t-findings" aria-controls="findings" aria-selected="false">Findings</button>
+  <button role="tab" id="t-sheets" aria-controls="sheets" aria-selected="false">Opportunity Sheets</button>
+  <button role="tab" id="t-library" aria-controls="library" aria-selected="false">Evidence Library</button>
+  <button role="tab" id="t-method" aria-controls="method" aria-selected="false">Method</button>
+</div></nav>
+
+<main><div class="wrap">
+  <section class="panel" id="overview" role="tabpanel" aria-labelledby="t-overview"></section>
+  <section class="panel" id="findings" role="tabpanel" aria-labelledby="t-findings" hidden></section>
+  <section class="panel" id="sheets" role="tabpanel" aria-labelledby="t-sheets" hidden></section>
+  <section class="panel" id="library" role="tabpanel" aria-labelledby="t-library" hidden></section>
+  <section class="panel" id="method" role="tabpanel" aria-labelledby="t-method" hidden></section>
+</div></main>
+<footer><div class="wrap"><span>FATCAT9 — Human Understanding Through Data</span><span id="foot">Research and interpretation by FATCAT9. Creative strategy and execution remain with the brand and its agencies.</span></div></footer>
+
+<script>
+(function () {
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const COMP = ['volume', 'intensity', 'momentum', 'relevance'];
+  const CCOL = { volume: 'var(--c1)', intensity: 'var(--c2)', momentum: 'var(--c3)', relevance: 'var(--c4)' };
+  const PCOL = { Instagram: 'var(--c1)', Facebook: 'var(--c2)', TikTok: 'var(--c3)', X: 'var(--c4)', Reviews: 'var(--c5)' };
+  const PORDER = ['Instagram', 'Facebook', 'TikTok', 'X', 'Reviews'];
+  const state = { brand: 'All', lib: { q: '', brand: '', platform: '', finding: '', stage: '' } };
+  let D;
+
+  fetch('edition.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(d => { D = d; init(); })
+    .catch(() => { $('#overview').innerHTML = '<div class="empty">The edition data could not be loaded. Check that <b>edition.json</b> sits next to this page.</div>'; });
+
+  function score(f) { const w = D.scoring.weights; return COMP.reduce((s, k) => s + f.components[k] * w[k], 0); }
+  function strength(s) { const t = D.scoring.strength; return s >= t.Strong ? 'Strong' : s >= t.Emerging ? 'Emerging' : 'Watch'; }
+  function fmt(n) { return n.toLocaleString('en-US'); }
+
+  function init() {
+    const e = D.edition;
+    $('#client').textContent = e.client; $('#product').textContent = e.product;
+    $('#period').textContent = e.month + ' · ' + e.period;
+    $('#edlabel').textContent = e.label; $('#ednum').textContent = 'No. ' + e.number; $('#published').textContent = 'Published ' + e.published;
+    $('#synth').hidden = !e.synthetic; $('#disclaimer').textContent = e.disclaimer;
+    D.findings.forEach(f => { f.score = Math.round(score(f)); f.strength = strength(f.score); });
+    D.findings.sort((a, b) => b.score - a.score);
+    renderOverview(); renderFindings(); renderSheets(); renderLibrary(); renderMethod();
+    document.querySelectorAll('[role=tab]').forEach(b => b.addEventListener('click', () => show(b.getAttribute('aria-controls'))));
+    const h = (location.hash || '').slice(1); let saved = null; try { saved = localStorage.getItem('aci-tab'); } catch (_) {}
+    show(['overview', 'findings', 'sheets', 'library', 'method'].includes(h) ? h : (saved || 'overview'), true);
+  }
+
+  function show(id, quiet) {
+    document.querySelectorAll('[role=tab]').forEach(b => b.setAttribute('aria-selected', b.getAttribute('aria-controls') === id));
+    document.querySelectorAll('.panel').forEach(p => p.hidden = p.id !== id);
+    try { localStorage.setItem('aci-tab', id); } catch (_) {}
+    if (!quiet) window.scrollTo({ top: 0 });
+  }
+
+  function legend(map, keys, labels) { return '<div class="legend">' + keys.map(k => `<span><i style="background:${map[k]}"></i>${esc(labels ? labels[k] : k)}</span>`).join('') + '</div>'; }
+  function chips(f) { return `<span class="chip ${f.strength}">${f.strength}</span><span class="chip ${f.brand}">${esc(f.brand)}</span><span class="chip">${esc(f.type)}</span>`; }
+
+  function renderOverview() {
+    const o = D.overview, w = D.scoring.weights, L = D.scoring.labels;
+    const thr = D.scoring.strength;
+    const rows = D.findings.map(f => {
+      const segs = COMP.map(k => { const v = f.components[k] * w[k]; return `<span data-k="${k}" style="width:${v}%;background:${CCOL[k]}"></span>`; }).join('');
+      return `<div class="prow" data-id="${f.id}" tabindex="0" role="button" aria-label="${esc(f.title)}, priority ${f.score}">
+        <div><div class="ptitle">${esc(f.title)}</div><div class="pmeta">${chips(f)}</div></div>
+        <div class="track"><div class="thresh" style="left:${thr.Emerging}%"></div><div class="thresh" style="left:${thr.Strong}%"></div><div class="bar">${segs}</div></div>
+        <div class="score">${f.score}</div></div>`;
+    }).join('');
+    const mix = (arr, cols) => '<div class="mixbar">' + arr.map((m, i) => `<span title="${esc(m.name)} ${m.pct}%" style="width:${m.pct}%;background:${cols[i]}"></span>`).join('') + '</div>' +
+      '<div class="legend">' + arr.map((m, i) => `<span><i style="background:${cols[i]}"></i>${esc(m.name)} <b class="num">${m.pct}%</b></span>`).join('') + '</div>';
+    $('#overview').innerHTML = `
+      <div><p class="eyebrow">This month in three lines</p><ol class="lines" style="margin-top:14px">${o.threeLines.map((t, i) => `<li><span>0${i + 1}</span>${esc(t)}</li>`).join('')}</ol></div>
+      <div class="kpis">${o.kpis.map(k => `<div class="kpi"><b>${esc(k.value)}</b><span>${esc(k.label)}</span></div>`).join('')}</div>
+      <div>
+        <div class="sec-head"><div><p class="eyebrow">Priorities</p><h2>Where the conversation carries the most weight</h2></div>
+        <p>Priority score 0–100, built from four weighted criteria. Each colored segment shows how much a criterion contributes. Hover a bar for detail; select a row to open the finding.</p></div>
+        <div class="chart" id="pchart">${legend(CCOL, COMP, Object.fromEntries(COMP.map(k => [k, L[k] + ' · ' + Math.round(w[k] * 100) + '%'])))}${rows}
+          <div class="axis"><span></span><div class="ticks"><span style="left:0">0</span><span style="left:${thr.Emerging}%">${thr.Emerging} Emerging</span><span style="left:${thr.Strong}%">${thr.Strong} Strong</span><span style="left:100%">100</span></div><span></span></div>
+          <div class="tip" id="tip" hidden></div></div>
+      </div>
+      <div class="two">${['Sandals', 'Beaches'].map(b => `<div class="brandcol ${b}"><h3>${b} this month</h3><ul>${o.brandSplit[b].map(i => `<li><b>${esc(i.tag)}</b><span>${esc(i.text)}</span></li>`).join('')}</ul></div>`).join('')}</div>
+      <div>
+        <div class="sec-head"><div><p class="eyebrow">Where it happens</p><h2>Conversation mix and platform notes</h2></div><p>Share of analyzed public conversations this period. Reviews are counted separately.</p></div>
+        <div class="two" style="margin-bottom:8px"><div><p class="eyebrow" style="color:var(--fg-3)">By brand relevance</p>${mix(o.mix.brand, ['var(--accent-bright)', 'var(--sand)', 'var(--fg-3)'])}</div>
+        <div><p class="eyebrow" style="color:var(--fg-3)">By platform</p>${mix(o.mix.platform, o.mix.platform.map(p => PCOL[p.name]))}</div></div>
+        <div class="pnotes">${o.platformNotes.map(p => `<div class="pnote"><h3><i style="background:${PCOL[p.platform]}"></i>${esc(p.platform)}</h3><p>${esc(p.note)}</p></div>`).join('')}</div>
+      </div>
+      <div><div class="sec-head"><div><p class="eyebrow">Cultural watch</p><h2>Developments to follow</h2></div></div>
+        <div class="watch">${o.culturalWatch.map(c => `<article><span class="chip ${c.signal}" style="justify-self:start">${c.signal}</span><h3>${esc(c.title)}</h3><p>${esc(c.text)}</p></article>`).join('')}</div></div>
+      <div><div class="sec-head"><div><p class="eyebrow">For the next session</p><h2>Questions to discuss with the team</h2></div></div>
+        <ol class="questions">${o.nextSession.map(q => `<li>${esc(q)}</li>`).join('')}</ol></div>`;
+    const chart = $('#pchart'), tip = $('#tip');
+    chart.querySelectorAll('.prow').forEach(r => {
+      const f = D.findings.find(x => x.id === r.dataset.id);
+      const open = () => { state.brand = 'All'; renderFindings(); show('findings'); setTimeout(() => { const el = document.getElementById('card-' + f.id); if (el) el.scrollIntoView({ block: 'start' }); }, 30); };
+      r.addEventListener('click', open); r.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(); } });
+      r.addEventListener('mousemove', ev => {
+        tip.innerHTML = `<b>${esc(f.title)}</b>` + COMP.map(k => `<div><span>${esc(L[k])} (${f.components[k]} × ${w[k]})</span><span>${(f.components[k] * w[k]).toFixed(1)}</span></div>`).join('') + `<div style="border-top:1px solid rgba(255,255,255,.2);margin-top:4px;padding-top:4px"><span>Priority score</span><b>${f.score}</b></div>`;
+        tip.hidden = false; const cr = chart.getBoundingClientRect(); let x = ev.clientX - cr.left + 14; const tw = tip.offsetWidth;
+        if (x + tw > cr.width - 8) x = ev.clientX - cr.left - tw - 14; tip.style.left = Math.max(8, x) + 'px'; tip.style.top = (ev.clientY - cr.top + 14) + 'px';
+      });
+      r.addEventListener('mouseleave', () => tip.hidden = true);
+    });
+  }
+
+  function platBar(p) {
+    const keys = PORDER.filter(k => p[k]);
+    return '<div class="fplat"><div class="mixbar" style="margin:0">' + keys.map(k => `<span title="${k} ${p[k]}%" style="width:${p[k]}%;background:${PCOL[k]}"></span>`).join('') + '</div><div class="legend" style="margin:0">' + keys.map(k => `<span><i style="background:${PCOL[k]}"></i>${k} <b class="num">${p[k]}%</b></span>`).join('') + '</div></div>';
+  }
+  function postHTML(e, tags) {
+    return `<div class="post"><div class="who"><i style="background:${PCOL[e.platform]}"></i><b>${esc(e.author)}</b><span>${esc(e.platform === 'Reviews' ? 'Guest review' : e.platform)} · ${esc(e.date)}</span></div><p>${esc(e.text)}</p>${tags ? `<div class="tags"><span class="chip ${e.brand}">${esc(e.brand)}</span><span class="chip">${esc(e.stage)}</span><span class="chip">${esc(e.need)}</span><span class="chip">${esc(e.finding)}</span></div>` : ''}</div>`;
+  }
+
+  function renderFindings() {
+    const brands = ['All', 'Sandals', 'Beaches', 'Category'];
+    const list = D.findings.filter(f => state.brand === 'All' || f.brand === state.brand);
+    const w = D.scoring.weights, L = D.scoring.labels;
+    $('#findings').innerHTML = `
+      <div class="sec-head" style="margin:0"><div><p class="eyebrow">Prioritized findings</p><h2>${D.findings.length} findings this month, ranked by priority</h2></div>
+      <div class="filters seg" role="group" aria-label="Filter by brand">${brands.map(b => `<button aria-pressed="${state.brand === b}" data-b="${b}">${b}</button>`).join('')}</div></div>
+      <div class="flist">${list.map((f, i) => {
+        const ev = D.evidence.filter(e => f.evidence.includes(e.id)).slice(0, 2);
+        return `<article class="finding" id="card-${f.id}">
+          <div class="fhead"><div><span class="fid">${f.id} · Rank ${D.findings.indexOf(f) + 1}</span><h3>${esc(f.title)}</h3><div class="pmeta" style="margin-top:8px">${chips(f)}<span class="chip">${esc(f.stage)}</span></div></div>
+          <div class="fscore"><b>${f.score}</b><span>Priority score</span></div></div>
+          <div class="metrics"><div><b>${fmt(f.mentions)}</b><span>Mentions</span></div><div><b class="up">+${f.change}%</b><span>vs. previous 30 days</span></div><div><b>${f.share}%</b><span>of ${esc(f.shareOf)}</span></div><div><b>${esc(f.profile)}</b><span>Main profile</span></div></div>
+          <div class="fbody">
+            <div style="display:grid;gap:16px;align-content:start">
+              <div><h4>What people express</h4><p>${esc(f.summary)}</p></div>
+              <div><h4>What it reveals</h4><p class="reveal">${esc(f.reveals)}</p></div>
+              <div><h4>Underlying tension</h4><p>${esc(f.tension)} · <span style="color:var(--fg-3)">${f.emotions.map(esc).join(', ')}</span></p></div>
+              <div><h4>Where it appears</h4>${platBar(f.platforms)}</div>
+            </div>
+            <div style="display:grid;gap:12px;align-content:start"><h4>In their words · synthetic</h4><div class="quotes">${ev.map(e => postHTML(e)).join('')}</div>
+              <div class="weights">${COMP.map(k => `<span>${esc(L[k])} <b>${f.components[k]}</b></span>`).join('')}</div>
+              <div style="display:flex;gap:18px;flex-wrap:wrap"><button class="linkbtn" data-ev="${f.id}">See all ${f.evidence.length} conversations</button>${f.sheet ? `<button class="linkbtn" data-sheet="${f.sheet}">Open opportunity sheet</button>` : ''}</div>
+            </div>
+          </div></article>`;
+      }).join('')}</div>`;
+    $('#findings').querySelectorAll('[data-b]').forEach(b => b.addEventListener('click', () => { state.brand = b.dataset.b; renderFindings(); }));
+    $('#findings').querySelectorAll('[data-ev]').forEach(b => b.addEventListener('click', () => { state.lib = { q: '', brand: '', platform: '', finding: b.dataset.ev, stage: '' }; renderLibrary(); show('library'); }));
+    $('#findings').querySelectorAll('[data-sheet]').forEach(b => b.addEventListener('click', () => { show('sheets'); setTimeout(() => { const el = document.getElementById('sheet-' + b.dataset.sheet); if (el) el.scrollIntoView({ block: 'start' }); }, 30); }));
+  }
+
+  function renderSheets() {
+    $('#sheets').innerHTML = `<div class="sec-head" style="margin:0"><div><p class="eyebrow">Opportunity sheets</p><h2>One page per priority finding, ready for agency conversations</h2></div>
+      <p>Each sheet connects the evidence to its meaning and brand relevance. FATCAT9 frames where a finding points; creative direction stays with the brand and its agencies.</p></div>
+      <div class="sheets">${D.sheets.map(s => {
+        const f = D.findings.find(x => x.id === s.finding);
+        return `<article class="sheet" id="sheet-${s.id}">
+          <div class="sheet-top"><span class="eyebrow">${s.id} · ${esc(f.brand)} · From finding ${f.id}</span><h3>${esc(s.headline)}</h3><p>${esc(f.title)} · Priority ${f.score} · ${f.strength}</p></div>
+          <div class="sheet-body">
+            <div><h4>The evidence</h4><ul>${s.evidence.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+            <div><h4>What it means</h4><p>${esc(s.meaning)}</p></div>
+            <div><h4>Brand relevance</h4><div class="rel"><div><b>Who</b><span>${esc(s.relevance.who)}</span></div><div><b>When</b><span>${esc(s.relevance.when)}</span></div><div><b>How</b><span>${esc(s.relevance.how)}</span></div></div></div>
+            <div><h4>In their words · synthetic</h4><div class="quotes">${D.evidence.filter(e => f.evidence.includes(e.id)).slice(0, 2).map(e => postHTML(e)).join('')}</div></div>
+            <div class="opp"><h4>${esc(s.opportunity.type)}</h4><p class="stmt">${esc(s.opportunity.statement)}</p><div class="also">${s.alsoConsider.map(a => `<span><b>${esc(a.type)}:</b> ${esc(a.text)}</span>`).join('')}</div></div>
+            <div><h4>Questions to explore with agencies</h4><ul>${s.agencyQuestions.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+            <div><h4>What we don’t know yet</h4><ul>${s.unknowns.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+          </div></article>`;
+      }).join('')}</div>`;
+  }
+
+  function renderLibrary() {
+    const uniq = k => [...new Set(D.evidence.map(e => e[k]))];
+    const opt = (id, label, vals, cur, fmtv) => `<select id="${id}" aria-label="${label}"><option value="">${label}: all</option>${vals.map(v => `<option value="${esc(v)}" ${v === cur ? 'selected' : ''}>${esc(fmtv ? fmtv(v) : v)}</option>`).join('')}</select>`;
+    const s = state.lib;
+    if (!$('#lib-q')) {
+      $('#library').innerHTML = `<div class="sec-head" style="margin:0"><div><p class="eyebrow">Evidence library</p><h2>The conversations behind every finding</h2></div><p>Search and filter the supporting posts and reviews. In a live edition, each entry links back to its public source.</p></div>
+        <div style="display:grid;gap:14px"><div class="libbar"><input id="lib-q" type="search" placeholder="Search words, e.g. “included”, “date night”" aria-label="Search conversations">
+        ${opt('lib-brand', 'Brand', uniq('brand'), s.brand)}${opt('lib-platform', 'Platform', PORDER.filter(p => uniq('platform').includes(p)), s.platform)}
+        ${opt('lib-finding', 'Finding', D.findings.map(f => f.id).sort(), s.finding, v => v + ' · ' + D.findings.find(f => f.id === v).title)}${opt('lib-stage', 'Stage', ['Dreaming', 'Planning', 'Comparing', 'Deciding', 'Post-stay'].filter(x => uniq('stage').includes(x)), s.stage)}</div>
+        <div class="libcount"><span id="lib-n"></span><button class="linkbtn" id="lib-reset">Clear filters</button></div><div class="libgrid" id="lib-grid"></div></div>`;
+      $('#lib-q').addEventListener('input', ev => { s.q = ev.target.value; drawLib(); });
+      ['brand', 'platform', 'finding', 'stage'].forEach(k => $('#lib-' + k).addEventListener('change', ev => { s[k] = ev.target.value; drawLib(); }));
+      $('#lib-reset').addEventListener('click', () => { state.lib = { q: '', brand: '', platform: '', finding: '', stage: '' }; syncLib(); drawLib(); });
+    }
+    syncLib(); drawLib();
+  }
+  function syncLib() { const s = state.lib; $('#lib-q').value = s.q; ['brand', 'platform', 'finding', 'stage'].forEach(k => $('#lib-' + k).value = s[k]); }
+  function drawLib() {
+    const s = state.lib, q = s.q.trim().toLowerCase();
+    const res = D.evidence.filter(e => (!s.brand || e.brand === s.brand) && (!s.platform || e.platform === s.platform) && (!s.finding || e.finding === s.finding) && (!s.stage || e.stage === s.stage) && (!q || (e.text + ' ' + e.author + ' ' + e.need + ' ' + e.profile).toLowerCase().includes(q)));
+    $('#lib-n').textContent = `Showing ${res.length} of ${D.evidence.length} conversations · synthetic examples`;
+    $('#lib-grid').innerHTML = res.length ? res.map(e => postHTML(e, true)).join('') : '<div class="empty" style="grid-column:1/-1">No conversations match these filters. Clear a filter or try another word.</div>';
+  }
+
+  function renderMethod() {
+    const m = D.method, w = D.scoring.weights, L = D.scoring.labels, De = D.scoring.descriptions, t = D.scoring.strength;
+    $('#method').innerHTML = `<div class="sec-head" style="margin:0"><div><p class="eyebrow">Method</p><h2>How this edition was built</h2></div></div>
+      <div class="formula">Priority score = ${COMP.map(k => `${esc(L[k])} × ${w[k]}`).join(' + ')}<br><span style="font-family:var(--f-body);font-size:14px;color:var(--fg-2)">Each criterion is scored 0–100. Strong ≥ ${t.Strong} · Emerging ${t.Emerging}–${t.Strong - 1} · Watch &lt; ${t.Emerging}</span></div>
+      <div class="mgrid">
+        <article><h3>Scoring criteria</h3><ul>${COMP.map(k => `<li><b style="color:var(--fg)">${esc(L[k])} (${Math.round(w[k] * 100)}%)</b> — ${esc(De[k])}</li>`).join('')}</ul></article>
+        <article><h3>Sources</h3><ul>${m.sources.map(x => `<li>${esc(x)}</li>`).join('')}</ul><p>Period: ${esc(D.edition.period)}</p></article>
+        <article><h3>How conversations are organized</h3><div class="tags">${m.dimensions.map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div><p>${esc(m.interpretation)}</p></article>
+        <article><h3>Measurement boundaries</h3><p>${esc(m.boundaries)}</p></article>
+      </div>`;
+  }
+})();
+</script>
